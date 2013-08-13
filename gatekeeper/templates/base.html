@@ -1,0 +1,74 @@
+{% load bootstrap_toolkit %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}{%endblock%}GateKeeper</title>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico" />
+    {% bootstrap_stylesheet_tag %}
+    {% bootstrap_stylesheet_tag "responsive" %}
+    <!--link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-responsive.min.css" type="text/css" /-->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/scojs.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/gatekeeper.css" type="text/css" />
+    
+    <!--link rel="stylesheet" href="{{ STATIC_URL }}css/layout.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/themes/cupertino/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}jquery/jquery.jgrowl.css" type="text/css" /-->
+    <!--link type="text/css" href="../static/css/layout.css" rel="stylesheet" /-->
+    <!--link href="/static/css/validationEngine.jquery.css" rel="stylesheet" type="text/css" /-->
+
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js"></script>
+    {% bootstrap_javascript_tag %}
+    {% block js %}{% endblock %}
+    <!--script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script-->
+    <!--script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui-1.10.2.custom.js"></script-->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/spin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.spin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/sco.message.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/gatekeeper.js"></script>
+    
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/additional-methods.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/localization/messages_zh.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.maskedinput.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}datepicker/WdatePicker.js"></script>
+    
+    {% block css %}{% endblock %}
+
+    <script type="text/javascript">
+        $(function(){
+            {% block on_ready %}
+                //这里插入具体界面的on_ready代码
+            {% endblock %}
+            
+            //base頁面的on_ready代碼
+        });
+    </script>
+</head>
+{% spaceless %}
+<body>
+    <div id="wrap">
+        <div class="container">
+            {% block container %}{% endblock %}
+        </div>
+
+        <div id="push"></div>
+
+    </div>
+
+    <div id="footer">
+        <div class="container">
+            <div class="credit">
+                <p>Need help?Please call IT Helpdesk(566-116) or mail to CES-TJIT-116/CES/SuperNotes</p>
+                <p>Copyright © 2012 - 2013 CESBG/IT All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+{% endspaceless %}
+</html>

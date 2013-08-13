@@ -1,0 +1,88 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>application request</title>
+
+<!--link href="/static/css/smart_wizard.css" rel="stylesheet" type="text/css"-->
+<script type="text/javascript" src="/static/js/jquery-1.7.js"></script> 
+<script type="text/javascript" src="/static/js/csrf.js"></script>
+<!--script type="text/javascript" src="/static/js/jquery.smartWizard-2.0.min.js"></script-->
+
+<script type="text/javascript">
+    var curStepIdx = 0
+    $(document).ready(function(){
+    	// Smart Wizard    	
+  		//$('#wizard').smartWizard({contentURL:'add',transitionEffect:'slideleft',onFinish:onFinishCallback});
+        if (curStepIdx == 0) {
+            $("#back").hide()
+            curStepIdx ++;
+            //$("#wizard").load("wizard1");
+            doForwardProgress();
+            
+        }
+        //back button
+        $("#back").click(function(){
+            //if (curStepIdx < 1)
+            if (curStepIdx == 1){
+                curStepIdx --;
+                $("#back").hide();
+                doForwardProgress();
+                
+            } else {
+                curStepIdx --;
+                $("#back").show();
+                doForwardProgress();
+            }
+        });
+        //next button
+        $("#next").click(function(){
+            if (curStepIdx > -1) {
+                curStepIdx ++;
+                $("#back").show();
+                doForwardProgress();
+            }
+            //$("#resText").load("add");
+        });
+      //function onFinishCallback(){
+      //  alert('Finish Called');
+      //}    
+        $("#test").click(function(){
+            var fields = $('#form1').serialize()+"&step_number="+ curStepIdx;
+            console.log(fields);
+            //alert($("#wizard").serialize());//{step_number : curStepIdx,}
+        });
+    });
+    function doForwardProgress(){
+            //alert($("#form1").serialize()+"&step_number="+ curStepIdx);
+            $.ajax({
+                url:"wizard",
+                type: "POST",
+                data: $("#form1").serialize()+"&step_number="+ curStepIdx,//$("#wizard").serialize()
+                dataType: "html",
+                success: function(res){
+                    $("#wizard").html(res);
+                    //$($(selStep, obj).attr("href"), obj).html(res);
+                }
+            })
+    }
+</script>
+</head><body>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0">
+<tr><td> 
+<!-- Smart Wizard -->
+<form id ="form1">
+  		<div id="wizard" ><!--class="swMain"-->
+  		
+  		</div>
+</form>
+<!-- End SmartWizard Content -->  		
+        <div>
+            <input type="button" id="back" value="上一步" />
+            <input type="button" id="next" value="下一步" />
+            <input type="button" id="test" value="測試" />
+        </div>
+</td></tr>
+</table>
+</body>
+</html>

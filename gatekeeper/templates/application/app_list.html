@@ -1,0 +1,156 @@
+{% extends "base_left_nav.html" %}
+
+{% block js %}
+<script type="text/javascript">
+    //var page={{ page }};
+    //var total_page ={{total_page}};
+    var order = '1'
+    var asc = 'false'
+    var url_list = "{% url application.views.app_list%}"
+    var url_detail = "/application/detail/"
+    //var stepCurrent = 1;
+    
+    $(document).ready(function(){
+        $("#left_nav #nav3").addClass("nav_current");
+        
+        refreshListFooter();
+        //處理表格排序
+        $("table#app_table thead tr th:lt(6)").click(function(){
+            if ($(this).hasClass("headerSortDesc")){
+                asc = "true";
+                $(this).removeClass("headerSortDesc").addClass("headerSortAsc")
+                    .siblings().removeClass("headerSortDesc headerSortAsc")
+            }else if ($(this).hasClass("headerSortAsc")){
+                asc = "false";
+                $(this).removeClass("headerSortAsc").addClass("headerSortDesc")
+                    .siblings().removeClass("headerSortDesc headerSortAsc")
+            }else{
+                asc = "false";
+                $(this).addClass("headerSortDesc")
+                    .siblings().removeClass("headerSortDesc headerSortAsc");
+            }
+            order = $(this).attr("order");
+            refreshAppList(page);
+            
+        });
+        //按鈕的事件處理
+        $("#previous_page_btn").click(function(){
+            var previous_page = page-1;
+            refreshAppList(previous_page);
+        });
+
+        $("#next_page_btn").click(function(){
+            var next_page = page+1;
+            refreshAppList(next_page);
+        });
+        $("#pagenum").change(function(){
+            var page =$(this).val();
+            refreshAppList(page);
+        });
+    });
+    
+    function refreshAppList(page){
+        //var next_page = page+1;
+        var url_= url_list+"?order="+order+"&asc="+asc+"&page="+page;
+        $.getJSON(url_,function(data){
+            $("table tbody#app_items").fadeOut();
+            displayAppList(data);
+            $("table tbody#app_items").fadeIn(500);
+        });
+    }
+    
+    function displayAppList(data){
+        var $tbody = $("tbody#app_items").html("");
+        console.log(data);
+        page = data.page;
+        total_page = data.total_page;
+        
+        $.each(data.content,function(index,row){
+            var row4;
+            if (row[4]!= null)
+                row4 = row[4]
+            else
+                row4 = row[5];
+            var html = "<tr><td>"+row[0]+"</td>"+"<td><a href='"+url_detail+row[1]+"/'>"+row[1]+"</a></td>"+"<td>"+row[2]+"</td>"+
+                          "<td>"+row[3]+"</td><td></td>"+"<td>"+row4+"</td></tr>";
+            $tbody.append(html);
+        });
+
+        refreshListFooter();
+    }
+    
+    function refreshListFooter(){
+        $("span#pageInfo").html(" 當前頁 <"+page+" of "+total_page+"> ");
+        if (page > 1) {
+            $("#previous_page_btn").show();
+        }else{
+            $("#previous_page_btn").hide();
+        }
+        if (page < total_page){
+            $("#next_page_btn").show();
+        }else{
+            $("#next_page_btn").hide();
+        }
+        $("#pagenum").empty();
+        for(var i=1;i<=total_page;i++){ 
+            $("#pagenum").append("<option value="+i+">"+i+"</option>");
+        }
+        $("#pagenum").val(page);
+    }
+    
+</script>
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+    
+{% endblock %}
+
+{% block maincontent %}
+<!--申請單簽核頁面-->
+<!--橫向導航欄-->
+<!--div class="nav_horizontal">
+    <ul>
+        <li><a href="#">1.類型選擇</a></li>
+        <li><a href="#">2.資料填寫</a></li>
+        <li><a href="#">3.部門簽核</a></li>
+        <li><a href="#">4.資安簽核</a></li>
+    </ul>
+</div-->
+<input type="text" value="請輸入申請單單號或者管製卡卡號" size="50" name="app_id" id="id_app_id" />
+<input id="id_submit" type="submit" value="查找" />
+
+<h2>待簽核申請單列表：</h2>
+<table id="app_table" >
+<thead>
+    <tr><th class="header headerSortDesc" order=1>提交日期</th>
+        <th class="header" order=2>單號</th>
+        <th class="header" order=3>類型</th>
+        <th class="header" order=4>(代)申請人</th>
+        <th class="header" order=5>部門</th>
+        <th class="header" order=6>攜帶人/使用人</th>
+    </tr>
+</thead>
+<tbody id="app_items">
+{% for app in app_list %}
+    <tr>
+        <td>{{ app.0|date:"Y-m-d H:i:s" }}</td>
+        <td><a href="{% url gk_app_detail app_id=app.1 action=view %}">{{ app.1 }}</a></td>
+        <td>{{app.2}}</td>
+        <td>{{ app.3 }}</td>
+        <td>{{app.4}}</td>
+        <td>{{app.5}}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+<div align="center">
+    <a id="previous_page_btn" href="#">上一頁</a>
+    <span id="pageInfo" class="current"></span>
+    <a id="next_page_btn" href="#">下一頁</a>
+    <select id="pagenum" name="page"></select>
+</div>
+
+{% endblock %}
+

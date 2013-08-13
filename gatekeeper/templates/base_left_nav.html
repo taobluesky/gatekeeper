@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load gk_tags %}
+
+{% block container%}
+<div id="fixed-padding">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <img class= "pull-left" src="{{ STATIC_URL }}img/s-logo.png" width="30">
+            <a class="brand" href="#">&nbsp;Gatekeeper</a>
+            <!--span class="navbar-text">資安管控</span-->
+            <!--ul class="nav">
+              <li class="active"><a href="#">首页</a></li>
+              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+            </ul-->
+            <ul class="nav pull-right" >
+                {% if user.is_authenticated %}
+                <li>
+                    <a id="id_user" class="dropdown" data-toggle="dropdown" role="button" href="#">
+                        <i class="icon-user"></i> {{user.username}}<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="id_user">
+                        <li><a tabindex="-1" href="{% url 'gk_my_account' %}"><i class="icon-user"></i> 我的帳號</a></li>
+                        <li><a tabindex="-1" href="{% url 'gk_org_manage' %}"><i class="icon-wrench"></i> 後臺管理</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" href="{% url 'gk_logout' %}"><i class="icon-off"></i> 登出</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a href="{% url 'gk_login' %}">登錄</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>  
+</div>
+
+<div class="row-fluid">
+        <div class="span3" style="padding:50px 0 0;">
+            <!--Sidebar content-->
+            {% left_nav %}
+        </div>
+    
+        <div class="span9">
+            <!--Body content-->
+            <!--div class="page-header">
+                <h3>標題標題標題 <small>子標題 描述</small></h3>
+            </div-->
+            
+            {% block maincontent %}{% endblock %}
+            
+        </div>
+        
+</div>
+
+</div>
+{% endblock %}

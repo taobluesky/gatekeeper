@@ -1,0 +1,30 @@
+<table>
+<tr>
+<td><label for="id_manufacturer">品牌:</label></td>
+    
+<td><select name="manufacturer" id="id_manufacturer">
+    <option value="Apple" selected="selected">Apple</option>
+    <option value="DELL">DELL</option>
+    <option value="HP">HP</option>
+    <option value="OTHERS">不在列表中</option>
+    </select></td>
+    
+<td><label for="id_model_no">設備型號:</label></td>
+<td><input id="id_model_no" type="text" name="model_no" maxlength="50" class="validate[required]"/></td>
+    
+<td><label for="id_lan_mac">有線網卡MAC地址:</label></td>
+<td><input id="id_lan_mac" type="text" name="lan_mac" maxlength="17" class="validate[required]"/></td>
+</tr>
+<tr>
+<td><label for="id_color">颜色:</label></td>
+<td><select name="color" id="id_color">
+    <option value="white" selected="selected">白色</option>
+    <option value="black">黑色</option>
+    <option value="OTHERS">不在列表中</option>
+    </select></td>
+<td><label for="id_sn">設備序號:</label></td>
+<td><input id="id_sn" type="text" name="sn" maxlength="50" class="validate[required]"/></td>
+<td><label for="id_wifi_mac">無線網卡MAC地址:</label></td>
+<td><input id="id_wifi_mac" type="text" name="wifi_mac" maxlength="17" /></td>
+</tr>
+</table>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>組織架構</title>
+	<link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../demo.css">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.easyui.min.js"></script>
+</head>
+<body>
+<script>
+    $(document).ready(function(){
+        $("#org").tree({
+            "url":"http://127.0.0.1:8000/application/org-tree/",
+            "onClick":function(node){ console.log(node);alert("okay");}
+        });
+        
+        $('#member').datagrid({  
+            //url:'datagrid_data.json',  
+            columns:[[  
+                {field:'code',title:'Code',width:100,checkbox:true},  
+                {field:'emp_no',title:'工號',width:100},  
+                {field:'name',title:'名字',width:100,align:'right'}
+            ]],
+        
+        }); 
+    
+    });
+    
+ 
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',split:true" title="組織架構" style="width:200px;padding:10px">
+        <ul id="org" class="easyui-tree">
+            <li>
+                <span>ROOT</span>
+                <ul>
+                    <li>SUB1</li>
+                    <li>SUB2</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div data-options="region:'center'" title="成員結構" style="padding:10px">
+        <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+            <div title="成員">
+                <table id ="member" class="easyui-datagrid"
+                    title="成員列表"
+                    pagination="true">
+                    <tr>
+                        <td>12312312</td>
+                        <td>H710213</td>
+                        <td>解決就</td>
+                    </tr>
+                    <tr>
+                        <td>12312312</td>
+                        <td>H71042112</td>
+                        <td>212就</td>
+                    </tr>
+                </table>
+            </div>
+            <div title="主管">正在緊張進行中...</div>
+        </div>
+    </div>
+</div>
+
+    
+</body>
+</html>

@@ -1,0 +1,1 @@
+{% load i18n %}請您簽核《ＧＡＴＥＫＥＥＰＥＲ》系統中《{{app.get_type_display}}單》

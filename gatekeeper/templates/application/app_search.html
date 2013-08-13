@@ -1,0 +1,74 @@
+{% extends "base_left_nav.html" %}
+{% load bootstrap_toolkit %}
+
+{% block title %}單據查找 - {% endblock %}
+{% block js %}
+<script type="text/javascript">
+    $(function(){
+        
+    });
+    
+</script>
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+    
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="page-header">
+    <h1>單據查找<small>快速檢索單據</small></h1>
+</div>
+
+<form class="form-search" action="{% url 'gk_app_search' %}" method="get">
+    <div class="input-append">
+        <input class='input-xlarge search-query' type="text" placeholder="請輸入申請單單號或者管製卡卡號" value='{{q}}' name="q">
+        <button type="submit" class="btn" >查找</button>
+    </div>
+</form>
+
+
+{% for app in app_list %}
+    {% if forloop.first %}
+        <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>提交日期</th>
+                <th>單號</th>
+                <th>類型</th>
+                <th>申請人</th>
+                <th>部門</th>
+                <th>攜帶人/使用人</th>
+                <th>狀態</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% endif %}
+        <tr>
+            <td>{{ app.0|date:"Y-m-d H:i:s" }}</td>
+            <td><a href="{% url 'gk_app_detail' app_id=app.1 %}">{{ app.1 }}</a></td>
+            <td>{{app.2}}</td>
+            <td>{{ app.3 }}</td>
+            <td>{{app.4}}</td>
+            <td>{{app.5}}</td>
+            <td>{{ app.6 }}</td>
+        </tr>
+    {% if forloop.last %}
+        </tbody>
+        </table>
+        {% bootstrap_pagination app_list align="center" %}
+    {% endif %}
+{% empty %}
+    <div class="alert">
+        <h4>注意！</h4>
+        根據自身帳號權限，能查詢到相應申請單！
+    </div>
+{% endfor %}
+
+
+
+
+{% endblock %}
+

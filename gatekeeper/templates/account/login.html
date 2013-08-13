@@ -1,0 +1,46 @@
+{% extends "base_nobar.html" %}
+{% load i18n %}
+
+{% block title %}登錄 - {%endblock%}
+
+{% block js %}
+<script>
+    $(function(){
+        $('#id_user').popover('show');
+    });
+</script>
+{% endblock %}
+
+{% block content%}
+<div class="row-fluid">
+    
+    <div class="span7">
+        <!--Sidebar content-->
+        <div class="splash">
+            <img src="{{ STATIC_URL }}img/login-logo.jpg">
+        </div>
+        <p class="lead text-center">資安管控系統</p>
+        <p class="text-center">資訊類物品攜入攜出申請及管製卡申請，詳情諮詢116。</p>
+    </div>
+
+    <div class="span5">
+        <!--Body content-->
+        <form class="form-signin" method="post">
+            <div class="title-head">
+                <span class="title-text">登錄</span>
+                <span class="pull-right">（或<a href="#">創建用戶</a>）</span>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_url }}" />
+            <input id="id_user" name="username" type="text" class="input-block-level" value="{{username}}" placeholder="工號" 
+                data-html="true" data-placement="left" data-toggle="popover" 
+                {% if error %}data-content="<span class='text-error'>用戶名或者密碼錯誤！</span>"{% endif %}>
+
+            <input type="password" name="password" class="input-block-level" placeholder="密碼">
+            <a href="#">忘記密碼?</a>
+            <button type="submit" class="btn btn-primary pull-right" >登錄</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

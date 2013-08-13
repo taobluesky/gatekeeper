@@ -1,0 +1,63 @@
+{% load bootstrap_toolkit %}
+<script>
+    $(function(){
+        $(".actions ul a").click(function(){
+            var action = $(this).attr('action');
+            $("[name=action]:input").val(action);
+            $("#{{tab_name}}-form").submit();
+        });
+    });
+</script>
+
+<form id="{{tab_name}}-form" action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" value='' name="action">
+    <input type="hidden" value='{{tab_name}}' name="tab_name">
+    {% for message in messages_page.object_list %}
+        {% if forloop.first %}
+        <div class="actions">
+            <div class="btn-group">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                動作
+                <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    {% if tab_name == "unread" %}<li><a action="read" href="javascript:void(0);">已讀</a></li>{%endif%}
+                    <li><a action="delete" href="javascript:void(0);">刪除</a></li>
+                </ul>
+            </div>
+        </div>
+            <span class="messageAction"><input id="all" type="checkbox"></span>
+            <dl class="messageHead">
+                <dd class="messageLeft">時間</dd>
+                <dd class="messageTitle">標題</dd>
+                <dd class="messageRight">發送人</dd>
+            </dl>
+        {%endif%}
+
+        <span class="messageAction"><input name="selected" type="checkbox" value="{{message.id}}"></span>
+        <dl id="{{ message.id }}" class="messageList" 
+            url="{% url 'gk_mark_message' id=message.id %}">
+            <dd class="messageLeft content"> {{ message.post_time|date:"Y-m-d H:i:s" }}</dd>
+            <dd class="messageTitle content">{{ message.title }}</dd>
+            <dd class="messageRight content">System</dd>
+        </dl>
+        <!--div style="margin:0 0 10px;"-->
+            <div id="{{ message.id }}" class="popover bottom" style="position:relative;margin:11px 0 30px 10px;">
+                <div class="arrow"></div>
+                <h3 class="popover-title">{{ message.title }}</h3>
+                <div class="popover-content">
+                    <p>{{message.content|safe}}</p>
+                </div>
+            </div>
+        <!--/div-->
+        
+
+    {% empty %}
+        <div class="alert alert-info">
+            <strong>暫時沒有任何新消息!</strong>
+        </div>
+    {% endfor %}
+</form>
+{% bootstrap_pagination messages_page url=page_link_url align="center" %}
+

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GateKeeper</title>
+
+    <!--link href="/static/css/layout.css" rel="stylesheet" type="text/css" /-->
+    
+    <script type="text/javascript" src="/static/js/jquery-1.7.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.form.js"></script>
+    
+    <script type="text/javascript" src="/static/js/csrf.js"></script>
+    
+    <script type="text/javascript" src="/static/js/jquery-1.7.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.form.js"></script>
+    
+    <script type="text/javascript" src="/static/js/csrf.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/js/localization/messages_zh.js"></script>
+
+    {% block js %}
+        <!--这里插入具体页面引用的js库，或者js代码-->
+    {% endblock %}
+    <script type="text/javascript">
+    
+        $(document).ready(function(){
+            $("#test_form").validate({
+                rules:{
+                    subject:{
+                        required:true,
+                        minlength:5,
+                        maxlength:20
+                    },
+                    message:{
+                        required:true,
+                        minlength:20
+                    },
+                    sender:{
+                        //required:true,
+                        email:true
+                    }
+                    
+                },
+            });
+        
+        });
+    
+    </script>
+</head>
+
+<body>
+
+    <form id="test_form" action="" method="post">
+        <table>
+            {% for field in form %}
+            <tr>
+                <td>{{field.label_tag}}:
+                </td>
+                <td>
+                    {{field}}
+                    
+                    {% if field.errors %}
+                    <label class="error" for="{{field.id_for_label}}" generated="true">
+                    {% for e in field.errors %}
+                        {{e}}
+                    {% endfor%}
+                    </label>
+                    {% endif %}
+
+                </td>
+            </tr>
+            {% endfor %}
+            <tr><td><input type="submit" value="提交"></td></tr>
+        </table>
+    </form>
+</body>
+</html>

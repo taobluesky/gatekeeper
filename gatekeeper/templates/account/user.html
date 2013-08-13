@@ -1,0 +1,143 @@
+﻿{% extends "base.html" %}  
+   
+{% block title %} 申請嚮導 {% endblock %}  
+{% block pagename %} 申請嚮導 {% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="/static/js/csrf.js"></script>
+<script type="text/javascript">
+    var curStepIdx = 0
+    var nextStepIdx = 1
+	var app_type = 0
+    $(document).ready(function(){
+    	// Smart Wizard    	
+  		//$('#wizard').smartWizard({contentURL:'add',transitionEffect:'slideleft',onFinish:onFinishCallback});
+        if (curStepIdx == 0) {
+            $("#back").hide()
+            nextStepIdx = 1 ;
+            doForwardProgress();
+        }
+        //back button
+        $("#back").click(function(){
+            if (curStepIdx == 2){
+                nextStepIdx = 1;
+                $("#back").hide();
+                doForwardProgress();
+            } else {
+                nextStepIdx = curStepIdx -1;
+                $("#back").show();
+                doForwardProgress();
+            }
+        });
+        //next button
+        $("#next").click(function(){
+            if (curStepIdx > 0) {
+				console.log('curStepIdx='+curStepIdx);
+				if (curStepIdx == 1){
+					app_type = $('input:radio[name="app_type"]:checked').val();
+					//console.log(app_type);
+				}
+                //curStepIdx ++;
+                $("#back").show();
+                nextStepIdx = curStepIdx + 1 ;
+                doForwardProgress();
+
+            }
+            //$("#resText").load("add");
+        });
+      //function onFinishCallback(){
+      //  alert('Finish Called');
+      //}    
+        $("#test").click(function(){
+            $(".guest").hide();
+			//var fields = $('#stepform').serialize()+"&step_number="+ curStepIdx;
+            //console.log(fields);
+            //alert($("#wizard").serialize());//{step_number : curStepIdx,}
+        });
+    });
+    function doForwardProgress(){
+            //alert($("#form1").serialize()+"&step_number="+ curStepIdx);
+            $.ajax({
+                url:"step"+nextStepIdx,
+                type: "POST",
+                data: $("#stepform").serialize()+"&cur_step_idx="+ curStepIdx,//$("#wizard").serialize() +"&step_number="+ curStepIdx
+                dataType: "html",
+                success: function(res){
+                    $("#formwizard").html(res);
+                    $.getJSON('getjson/step'+nextStepIdx,{},function(data){
+                        console.log(data)
+                        console.log('app_type:'+ data.app_type )
+                        step = data.cur_step_idx
+                        console.log('step:'+step)
+                        if (step=='1'){
+                            $( "#id_apptype_"+ data.app_type).attr("checked","checked");
+                        } else if(step=='2'){
+                            //console.log('owner:'+ data.owner);
+                            $("#id_owner").val(data.owner);
+                            $("#id_manufacturer").val(data.manufacturer);
+                            $("#id_model_no").val(data.model_no);
+                            $("#id_color").val(data.color);
+                            $("#id_sn").val(data.sn);
+                            $("#id_lan_mac").val(data.lan_mac);
+                            $("#id_wifi_mac").val(data.wifi_mac);
+                        } else if(step=='3'){
+                            //console.log(data.isguest);
+                            $("#id_isguest_"+ data.isguest).attr("checked","checked");
+                            $("#id_name").val(data.name);
+                            $("#id_company").val(data.company);
+                            $("#id_phone").val(data.phone);
+                            $("#id_identify_type").val(data.identify_type);
+                            $("#id_identify_no").val(data.identify_no);
+                            $("#id_emp_no_1").val(data.emp_no_1);
+                            $("#id_foxconn_name_1").val(data.foxconn_name_1);
+                            $("#id_emp_no_2").val(data.emp_no_2);
+                            $("#id_foxconn_name_2").val(data.foxconn_name_2);
+                            //需要設置隱藏元素
+							if (app_type == 3){
+								$(".guest").hide();
+								$("#id_isguest_2").attr("checked","checked");
+							} else if((app_type ==4)||(app_type==5)){
+								$(".foxconn").hide();
+								$("#id_isguest_1").attr("checked","checked");
+							}
+                        } else if(step=='4'){
+                            if (data.carry_in=='1')
+                                $("#id_carry_in").attr("checked",true);
+                            if (data.carry_out=='1')
+                                $("#id_carry_out").attr("checked",true);
+                            
+                            $("#id_app_reason_1").val(data.app_reason_1);
+                            $("#id_requested_dt_1").val(data.requested_dt_1);
+                            $("#id_device_dest_1").val(data.device_dest_1);
+                            $("#id_app_reason_2").val(data.app_reason_2);
+                            $("#id_requested_dt_2").val(data.requested_dt_2);
+                            $("#id_device_dest_2").val(data.device_dest_2);
+                            
+                            $("#id_app_reason").val(data.app_reason);
+                            
+                        }
+                    })
+                    curStepIdx = nextStepIdx;
+                },
+                error: function(XMLHttpRequest,textStatus,errorThrown){
+                    alert('error');
+                }
+            })
+    }
+
+</script>
+{% endblock %}
+
+{% block content %}
+<form id="stepform" >
+  <div id="formwizard"></div>
+</form>
+
+<table>
+  <tr>  
+    <td colspan="2" align="right"><input type="button" id="back" value="上一步"/><input type="button" id="next" value="下一步"/>
+    <input type="button" id="test" value="測試" />
+    </td>
+  </tr>  
+</table>
+
+{% endblock %}

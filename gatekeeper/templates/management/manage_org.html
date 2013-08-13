@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GateKeeper Management</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/manage.css"  />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-easyui-1.3.3/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-easyui-1.3.3/themes/icon.css">
+    <!--link rel="stylesheet" type="text/css" href="../demo.css"-->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+    <!--script type="text/javascript" src="{{ STATIC_URL }}jquery-easyui-1.3.3/locale/easyui-lang-zh_TW.js"></script-->
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/spin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.spin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/gatekeeper.js"></script>
+</head>
+<body>
+<script>
+    var noSelectedRowStr = "未選取任何条目!";
+    var noSelectedNodeStr = "請在組織架構中選擇一個組.";
+    function alertMsgBox(msg){
+        $.messager.alert('Error',msg,'error');
+    }
+    function confirm1(){
+        $.messager.confirm('Tip', '确定执行此操作?', function(r){
+            if (r){
+                alert('confirmed: '+r);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        //修正easyui firefox bug？？
+        //$("#id_search_emp_no").val('');
+//------组织架构树-------------------------------------------------------------
+        $("#org-tree").tree({
+            "url":"{% url 'gk_org_node' %}",
+            "onClick":function(node){
+                $('#member').datagrid({
+                    url:"{% url 'gk_get_node_member' %}",
+                    queryParams:{'department':node.id}
+                });
+                $('#member').datagrid("clearSelections");
+                
+                //$('#member').datagrid("load",{'department':node.id});
+                
+                $('#signer-member').datagrid({
+                    url:"{% url 'gk_get_node_signer_member' %}",
+                    queryParams:{'department':node.id}
+                });
+                
+                $('#signer-member').datagrid("clearSelections");
+            },
+            //"onExpand":function(node){ console.log(node);alert("onExpand");},
+        });
+//------成員TAB---------------------------------------------------------------
+        $('#member').datagrid({
+            url:'',  
+            toolbar:'#member-toolbar',
+            idField:'emp_no',
+            remoteSort:true,
+            sortName:'emp_no',
+            pagination:true,
+            pageSize:20,
+            rownumbers:true,
+            fitColumns:true,
+            striped:true,
+            columns:[[  
+                {field:'ck',checkbox:true},
+                {field:'emp_no',title:'工號',width:50,sortable:true},  
+                {field:'name',title:'名字',width:50},
+                {field:'notes_mail',title:'郵箱',width:100},
+                {field:'extension',title:'分機號',width:50},
+                {field:'telephone',title:'手機號',width:50},
+                {field:'grade',title:'資位',width:50},
+                {field:'position',title:'管理職',width:50},
+            ]],
+        }); 
+        
+        var has_selected = function(selections){
+            
+        }
+        
+        $("#member-add-btn").live("click",function(){
+            alert("正在緊張開發中...");
+            //$('#member-add-dlg').dialog('open');
+        });
+        
+        $("#member-move-btn").live("click",function(){
+            var selections = $('#member').datagrid('getSelections');
+            //console.log(selections);
+            if ( selections.length==0)
+                alertMsgBox(noSelectedRowStr);
+            else
+                $('#member-move-dlg').dialog('open');
+        });
+        
+//------主管 tabs------------------------------------------------------------
+        $('#signer-member').datagrid({  
+            url:'',
+            toolbar:'#signer-member-toolbar',
+            idField:'id',
+            remoteSort:true,
+            sortName:'employee',
+            pagination:true,
+            pageSize:20,
+            rownumbers:true,
+            fitColumns:true,
+            columns:[[  
+                {field:'id',checkbox:true},
+                {field:'employee',title:'工號',width:50,sortable:true},  
+                {field:'name',title:'名字',width:50},
+                {field:'role',title:'角色',width:50},
+                {field:'notes_mail',title:'郵箱',width:100},
+                {field:'extension',title:'分機號',width:50},
+                {field:'telephone',title:'手機號',width:50},
+                {field:'grade',title:'資位',width:50},
+                {field:'position',title:'管理職',width:50},
+            ]],
+        
+        });
+        //增加主管
+        $("#signer-member-add-btn").live("click",function(){
+            $('#signer-member-add-dlg').dialog('open');
+        });
+        //移除主管
+        $("#signer-member-remove-btn").live("click",function(){
+            var $signer_datagrid = $('#signer-member');
+            var selections = $signer_datagrid.datagrid('getSelections');
+            //console.log(selections);
+            if (selections.length ==0)
+            {
+                alertMsgBox(noSelectedRowStr);
+                return false;
+            }
+            
+            $.messager.confirm('Tip', '确定执行此操作?', function(r){
+                if (r){
+                    var id_list = [],id_str=null;
+                    for(var i in selections){
+                        id_list.push(selections[i].id);
+                    }
+                    id_str = id_list.join(',');
+                    $.post("{% url 'gk_remove_signer' %}",{
+                        id_list:id_str
+                    },function(data){
+                        if (data.status=="success"){
+                            $signer_datagrid.datagrid('reload');
+                            $signer_datagrid.datagrid("clearSelections");
+                        }
+                    });
+                    
+                    //alert('confirmed: '+r);
+                }
+            });
+            
+        });
+        
+//------搜索TAB-------------------------------------------------------------------------
+        $('#member-search').datagrid({  
+            url:'',
+            toolbar:'#member-search-toolbar',
+            idField:'emp_no',
+            //remoteSort:true,
+            //sortName:'employee',
+            pagination:true,
+            pageSize:20,
+            rownumbers:true,
+            //fitColumns:true,
+            frozenColumns:[[
+                {field:'ck',checkbox:true},
+                {field:'emp_no',title:'工號',width:70},  
+                {field:'name',title:'姓名',width:70}
+            ]],
+            columns:[[
+                {field:'department',title:'所在組織',width:500},
+                {field:'notes_mail',title:'郵箱',width:280},
+                {field:'extension',title:'分機號',width:100},
+                {field:'telephone',title:'手機號',width:100},
+                {field:'grade',title:'資位',width:50},
+                {field:'position',title:'管理職',width:70},
+            ]],
+        });
+        //搜索 按鈕
+        $("#member-search-btn").click(function(){
+            /*$.post("{% url 'gk_member_search' %}",{
+                emp_no:$("#id_search_emp_no").value,
+                name:$("#id_search_name").value
+            },function(data){
+                
+            });*/
+            //$("#member-search").datagrid("clearSelections");
+            $("#member-search").datagrid({
+                url:"{% url 'gk_member_search' %}",
+                queryParams:{
+                    emp_no:$("#id_search_emp_no").val(),
+                    name:$("#id_search_name").val(),
+                }
+            });
+            $("#member-search").datagrid("autoSizeColumn");
+        });
+        //移動 按鈕
+        $("#member-search-move-btn").live("click",function(){
+            var selections = $('#member-search').datagrid('getSelections');
+            //console.log(selections);
+            if ( selections.length==0)
+                alertMsgBox(noSelectedRowStr);
+            else
+                $('#member-move-dlg').dialog('open');
+        });
+        
+        //清空 按钮
+        $("#remove-all-selected").live("click",function(){
+            $("#member-search").datagrid('clearSelections');
+            $("#member-search-move-btn").tooltip('hide');
+        });
+        //移動成員 提示框
+        $("#member-search-move-btn").tooltip({
+            position: 'bottom',  
+            content: $('<div></div>'),
+            //trackMouse:true,
+            hideEvent: 'none',
+            //showDelay: 500,
+            onUpdate:function(content){
+                //console.log(content);
+                var selectedNum = $("#member-search").datagrid("getSelections").length
+                var html = "<span style='color:#000'>已選擇了 {0} 个.</span><a id='remove-all-selected' href='javascript:void(0);'>[清空]</a>"
+                content.html($.format(html,selectedNum));
+            },
+            onShow: function(){
+                var t = $(this);
+                t.tooltip('update');
+                /*
+                t.tooltip('tip').css({  
+                    backgroundColor: '#666',  
+                    borderColor: '#666'  
+                });
+                */
+                t.tooltip('tip').focus().unbind().bind('mouseleave',function(){
+                    t.tooltip('hide');
+                }).bind('blur',function(){
+                    t.tooltip('hide');
+                });;
+            }  
+        }); 
+        //添加新員工 按鈕
+        $("#member-search-add-btn").live("click",function(){
+            $('#member-add-dlg').dialog('open');
+        });
+        
+//-----对话框------------------------------------------------------
+        //添加成員到組 對話框
+        $("#member-add-dlg").dialog({
+            iconCls:'icon-add',
+            closed:'true',
+            modal:true,
+            buttons: [{
+                    text:'Ok',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        alert('正在紧张开发中。。。');
+                    }
+                },{
+                    text:'Cancel',
+                    handler:function(){
+                        $("#member-add-dlg").dialog('close');
+                    }
+                }],
+        });
+        
+        //移動成員到組 對話框
+        $("#member-move-dlg").dialog({
+            iconCls:'icon-add',
+            closed:'true',
+            modal:true,
+            buttons: [{
+                    text:'Ok',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        var selectedNode = $("#move-org-tree").tree("getSelected");
+                        if (selectedNode == null){
+                            alertMsgBox("请选择一个新组！");
+                            return false;
+                        }
+                        //console.log(selectedNode.id);
+                        
+                        var rightTabs = $("#right-tabs");
+                        var selectedTab = rightTabs.tabs("getSelected");
+                        var index = rightTabs.tabs('getTabIndex',selectedTab);
+                        //console.log(index);
+                        
+                        var selectedDataGrid = null;
+                        if (index ==0){
+                            selectedDataGrid = $('#member');
+                        } else if (index==2)
+                            selectedDataGrid = $('#member-search');
+                        
+                        var selections = selectedDataGrid.datagrid('getSelections');
+                        //console.log(selections);
+                        if (selections.length ==0)
+                        {
+                            alertMsgBox(noSelectedRowStr);
+                            return false;
+                        }
+            
+                        $.messager.confirm('Tip', '确定执行此操作?', function(r){
+                            if (r){
+                                var id_list = [],id_str=null;
+                                for(var i in selections){
+                                    id_list.push(selections[i].emp_no);
+                                }
+                                id_str = id_list.join(',');
+
+                                $.post("{% url 'gk_move_member' %}",{
+                                    id_list:id_str,
+                                    department:selectedNode.id,
+                                },function(data){
+                                    if (data.status=="success"){
+                                        selectedDataGrid.datagrid('reload');
+                                        selectedDataGrid.datagrid("clearSelections");
+                                        $("#member-move-dlg").dialog('close');
+                                    } else
+                                        alertMsgBox("移动到新组失败！");
+                                });
+                                
+                                //alert('confirmed: '+r);
+                            }
+                        });
+            
+
+                    }
+                },{
+                    text:'Cancel',
+                    handler:function(){
+                        $("#member-move-dlg").dialog('close');
+                    }
+                }],
+            onOpen:function(){
+                var t = $("#move-org-tree");
+                if(t.tree("getSelected")==null)
+                    t.tree({
+                        url:"{% url 'gk_org_node' %}"
+                    });
+                    //console.log($(this));
+            },
+        });
+        
+        //添加主管成員 對話框
+        $("#signer-member-add-dlg").dialog({
+            iconCls:'icon-add',
+            closed:'true',
+            modal:true,
+            buttons: [{
+                    text:'Ok',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        //alert('ok');
+                        var selectedNode = $("#org-tree").tree("getSelected");
+                        if (selectedNode== null){
+                            alertMsgBox(noSelectedNodeStr);
+                            return false;
+                        }
+                        //console.log(selectedNode);
+                        
+                        $.post('{%url "gk_add_signer" %}',{
+                            emp_no: $('#signer-form #id_emp_no').val(),
+                            group: $('#signer-form #id_group').val(),
+                            department:selectedNode.id,
+                        },function(data){
+                            var $sigerForm = $("#signer-form");
+                            if (data["status"]=='success'){
+                                $sigerForm.html(data.html);
+                                $("#signer-member-add-dlg").dialog('close');
+                                $('#signer-member').datagrid('reload');
+                            } else{
+                                $sigerForm.html(data.html);
+                            }
+                        });
+                    }
+                },{
+                    text:'Cancel',
+                    handler:function(){
+                        $("#signer-member-add-dlg").dialog('close');
+                    }
+                }],
+        });
+        //添加新成員 對話框
+        $("#member-add-dlg").dialog({
+            iconCls:'icon-add',
+            closed:'true',
+            modal:true,
+            buttons: [{
+                    text:'Ok',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        //alert('ok');
+                        var selectedNode = $("#add-org-tree").tree("getSelected");
+                        if (selectedNode != null){
+                            //添加member form中department值,以便一次性提交表單
+                            $("#member-form #id_department").val(selectedNode.id);
+                            //alertMsgBox(noSelectedNodeStr);
+                            //return false;
+                        }
+
+                        
+                        $.post('{%url "gk_add_member" %}',$("#member-form").serialize(),function(data){
+                            var memberForm = $("#member-form");
+                            if (data["status"]=='success'){
+                                memberForm.html(data.html);
+                                $("#member-add-dlg").dialog('close');
+                                //$('#signer-member').datagrid('reload');
+                            } else{
+                                memberForm.html(data.html);
+                            }
+                        });
+                        
+                    }
+                },{
+                    text:'Cancel',
+                    handler:function(){
+                        $("#member-add-dlg").dialog('close');
+                    }
+                }],
+            onOpen:function(){
+                var t = $("#add-org-tree");
+                if(t.tree("getSelected")==null)
+                    t.tree({
+                        url:"{% url 'gk_org_node' %}"
+                    });
+                    //console.log($(this));
+            },
+        });
+        
+    });
+    
+ 
+</script>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',border:false" style="height:50px">
+        <div style="font-size:20px;margin:10px 0 0 10px;">GateKeeper Management</div>
+    </div>
+    <div data-options="region:'west',split:true" title="組織架構" style="width:200px;padding:10px">
+        <ul id="org-tree">
+        </ul>
+    </div>
+    <div data-options="region:'center'" title="成員結構" style="padding:10px">
+        <div id="right-tabs" class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+            <div title="组成員" style="padding-top:10px">
+                <table id ="member" title="成員列表">
+                </table>
+                
+                <div id="member-toolbar" style="padding:5px;height:auto">
+                    <div style="margin-bottom:5px">
+                        <a id="member-add-btn" href="javascript:void(0)" class="easyui-linkbutton"  
+                            data-options="iconCls:'icon-redo',plain:true">移动成員到该组</a>
+                        <a id="member-move-btn" href="javascript:void(0)" class="easyui-linkbutton" 
+                            iconCls="icon-edit" plain="true">移動到其它組</a>
+                        <!--a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true"></a>
+                           <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true"></a>
+                           <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"></a-->
+                    </div>
+                </div>
+            </div>
+            
+            <div title="签核角色" style="padding-top:10px">
+                <table id ="signer-member" title="主管列表">
+                </table>
+                <div id="signer-member-toolbar" style="padding:5px;height:auto">
+                    <div style="margin-bottom:5px">
+                        <a id="signer-member-add-btn" href="javascript:void(0)" class="easyui-linkbutton"  
+                            data-options="iconCls:'icon-add',plain:true">增加成員</a>
+                        <a id="signer-member-remove-btn" href="javascript:void(0)" class="easyui-linkbutton" 
+                            iconCls="icon-remove" plain="true">刪除成員</a>
+                            
+                        <!--a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true"></a>
+                        <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true"></a>
+                        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"></a-->
+                    </div>
+                </div>
+
+            </div>
+                
+            <div title="查找&操作" style="padding-top:10px">
+                <table id ="member-search" title="Search">
+                </table>
+                <div id="member-search-toolbar" style="padding:10px;height:auto">
+                    <!--div class="easyui-panel" style="margin-bottom:5px;padding:10px 10px 10px 20px" title="搜索">
+                    </div-->
+                        <label for="id_search_emp_no">工號：</label><input id="id_search_emp_no" style="width:150px;margin:0 10px 0;" />
+                        <label for="id_search_name">姓名：</label><input id="id_search_name" style="width:150px;margin:0 10px 0;" />
+                        <!--input id="id_search_name" class="easyui-validatebox" /-->
+                        <a id="member-search-btn" href="javascript:void(0)" class="easyui-linkbutton" 
+                            iconCls="icon-search" plain="fasle">搜索</a>
+                        <span style="float:right;margin:0 10px 0 10px;">动作：
+                            <a id="member-search-move-btn" href="javascript:void(0)" class="easyui-linkbutton member-move-btn" 
+                                iconCls="icon-redo" plain="true">移動到其它組</a>
+                            <a id="member-search-add-btn" href="javascript:void(0)" class="easyui-linkbutton" 
+                                iconCls="icon-add" plain="true">增加新员工</a>
+                        </span>
+                        <!--a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true"></a>
+                           <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true"></a>
+                           <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"></a-->
+                    
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+<div id="member-add-dlg" title="增加新成員" style="width:400px;height:500px;padding:10px">
+    <form id="member-form">
+        {{add_member_inline}}
+    </form>
+    <span>部門組織:</span>
+    <ul id="add-org-tree" class="easyui-tree"></ul>
+    
+</div>
+
+<div id="signer-member-add-dlg" title="增加新成員" style="width:350px;height:200px;padding:10px">
+    <div id="signer-form">
+        {{add_signer_inline}}
+    </div>
+</div>
+
+<div id="member-move-dlg" title="移動所選成員" style="width:400px;height:500px;padding:10px">
+    <strong>選擇新組:</strong><ul id="move-org-tree" class="easyui-tree"></ul>
+</div>
+
+    
+</body>
+</html>

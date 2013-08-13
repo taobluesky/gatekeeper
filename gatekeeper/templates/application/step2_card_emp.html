@@ -1,0 +1,85 @@
+<h2>電腦出入管製卡申請單（員工專用）</h2>
+<form id="mainform" enctype="multipart/form-data">
+    <h3>1.持卡人信息：</h3>
+    {% include 'application/emp_info.html' %}
+    <a>(注:)申請人須協理級（含）以上方可辦理此卡，無須核准主管簽核。不符合前述資格者，須經
+副總級（含）以上主管核准方可申請辦理。</a>
+
+    <h3>2.申請說明：</h3>
+    <label for="id_comment"></label><textarea id="id_comment" name="comment" cols="50" rows="3" class="validate[required]" />
+
+    <h3>3.設備信息：</h3>
+    <table>
+    <tr>
+    <td><label for="id_owner_personal">资产:</label></td>
+    <td><label for="id_owner_personal"><input class="validate[required] radio" type="radio" id="id_owner_personal" value="personal" name="owner" />个人</label></td>
+    <td><label for="id_owner_company"><input class="validate[required] radio" type="radio" id="id_owner_company" value="company" name="owner" />公司</label></td>
+    </tr>
+    </table>
+    {% include 'application/device_info.html' %}
+    
+    
+    <h3>4.持卡人证件影本及承诺书(含簽名檔)上傳：</h3>
+    {% include 'application/file_upload.html' %}
+    
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#mainform").validationEngine({
+            showPrompts:true,
+            validationEventTriggers:"blur"
+        }); 
+        
+        
+        $("input").bind("jqv.field.result",function(event,field,errorFound,prompText){ 
+                if(errorFound){ 
+                    
+                    field.removeClass("valid"); 
+                    field.addClass("invalid"); 
+                    if(0<field.next(".valid-side-note").length) 
+                        field.next(".valid-side-note").remove(); 
+                    //if(0==field.next(".invalid-side-note").length) 
+                    //    field.after('<span class="invalid-side-note">'+prompText+'</span>'); 
+                }else{ 
+                    field.removeClass("invalid"); 
+                    field.addClass("valid"); 
+                    if(0<field.next(".invalid-side-note").length) 
+                        field.next(".invalid-side-note").remove(); 
+                    //if(0==field.next(".valid-side-note").length) 
+                    //    field.after('<span class="valid-side-note"></span>'); 
+                } 
+                errorFound==false; 
+                //$("input").validationEngine('autoHidePrompt',true); 
+            });
+            
+        /*
+        $('#mainform').validate({
+            rules:{
+                emp_no:{required:true},
+                
+                owner:{required:true},
+                manufacturer:{required:true},
+                model_no:{required:true},
+                lan_mac:{required:true},
+                color:{required:true},
+                sn:{required:true},
+                wifi_mac:{required:true,macaddr:''},
+                reason:{required:true}
+                },
+            groups:'owner',
+            errorPlacement:function(error,element) { 
+                if (element.attr("name") == "owner") {
+                    var $elem = element.parent().next();
+                    error.insertAfter($elem); 
+                    }
+                else 
+                error.insertAfter(element); 
+            },
+            
+        });
+        */
+    });
+    
+</script>
+

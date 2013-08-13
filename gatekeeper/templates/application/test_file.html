@@ -1,0 +1,146 @@
+{% extends "base_left_nav.html"%}
+{% load bootstrap_toolkit %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{{ form.media }}
+{{ form1.media }}
+
+    <script>
+        $(function(){
+            $("#test").spin("small");
+            $("#test-btn").click(function(){
+                $("#test").spin(false);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block maincontent %}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //加載員工信息
+        var emp_check_data = function(data){
+            //console.log(data);
+            //var data = $.parseJSON(data);
+            var emp_data = data.data;
+            
+            if (data["status"]=="success") {
+                $("#id_emp_name").val(emp_data.name)
+                    .next("span").html(emp_data.name);
+                $("#id_emp_extension").val(emp_data.extension);
+                $("#id_emp_telephone").val(emp_data.telephone);
+                $("#id_emp_position").val(emp_data.position);
+                //$("#id_emp_grade").val(emp_data.grade);
+                $("#id_emp_department").val(emp_data.department)
+                    .next("span").html(emp_data.department);
+            } else if (data["status"]=="fail") {
+                $("#id_emp_name").val("")
+                    .next("span").html("");
+                $("#id_emp_extension").val("");
+                $("#id_emp_telephone").val("");
+                $("#id_emp_department").val("")
+                    .next("span").html("");
+                $("#id_emp_position").val("");
+                //$("#id_emp_grade").val("");
+            }
+        }
+        
+        $("#id_applicant_type").live("change",function() {
+            var select_value = $(this).val();
+            if (select_value == 0){
+                $("#customer-info").slideDown();
+                $("#emp-info-title").slideDown();
+                $("#emp-info").slideDown();
+            } else if (select_value == 1){
+                $("#emp-info-title").slideUp();
+                $("#customer-info").slideUp();
+                $("#emp-info").slideDown();
+            }
+        }).trigger("change");
+        
+        var $carry_in = $("#id_carry_in");
+        var $carry_out = $("#id_carry_out");
+        var showCarryTab = function(checkbox,tab){
+            var checked = checkbox.attr("checked");
+            if (checked)
+                $(tab).slideDown();
+            else
+                $(tab).slideUp();
+        }
+        
+        //載入頁面時初始化
+        showCarryTab($carry_in,"#carry-in-tab");
+        showCarryTab($carry_out,"#carry-out-tab");
+        
+        $carry_in.live("click",function() {
+            showCarryTab($carry_in,"#carry-in-tab");
+        });
+        
+        $("#id_carry_out").live("click",function() {
+            showCarryTab($carry_out,"#carry-out-tab");
+        });
+        
+        $("#id_emp_no").live("change",function() {
+            $.get("{% url 'gk_get_emp_info' %}",{emp_no:$(this).val()},function(data) {
+                emp_check_data(data);
+            });
+        });
+        
+        
+        $('#delete_btn').click(function(){
+            var pic_id = $('img').attr('id');
+            $.post('/depotapp/test/del/',{id:pic_id},function(data){
+            $("img").remove();
+            $('#delete_btn').remove();
+            });
+        });
+        
+
+        //$("#test_form").submit(function(){
+        //});
+        $("#submit").click(function(){
+           $("#test_form").ajaxSubmit({
+                //target:"#test",
+                success:function(){alert("OK!"); },
+            });
+        });
+        
+    });
+</script>
+
+<div class="page-header">
+    <h1>攜入攜出申請單<small></small></h1>
+</div>
+
+<form class="form-horizontal" id='test_form' enctype="multipart/form-data" action='' method='post'>
+{%csrf_token%}
+{% if form.non_field_errors %}
+<div class="alert alert-error">
+    <strong>請改正以下錯誤:</strong>
+    {{form.non_field_errors}}
+</div>
+{% endif %}
+
+{{form}}
+{{form}}
+
+<p class="form-actions">
+    <button type="button" class="btn">上一步</button>&nbsp;
+    <button type="submit" class="btn btn-primary">提交</button>
+</p>
+</form>
+
+<!--button id='test-btn'>stop ajax</button>
+<div id="test"></div-->
+
+{% if dbtest %}
+<img id="{{dbtest.id}}" src="{{dbtest.image.url}}"/><input type="button" id="delete_btn" value="刪除" />
+{% endif %}
+
+{% endblock %}
+
+

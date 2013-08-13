@@ -1,0 +1,24 @@
+<div id="app-detail">
+<h1>{{app_card.application.get_type_display}}申請單:{{app_card.application.number}}</h1>
+<h2>1.持卡人信息</h2>
+{{detail_applicant_inline|safe}}
+{% if is_customer%}
+    <table>
+        <tr>
+        <td>有效期:</td><td>{{app_card.start_date|date:"Y-m-d"}}</td>
+        <td>至</td><td>{{app_card.end_date|date:"Y-m-d"}}</td>
+        </tr>
+    </table>
+{% endif %}
+<h2>2.設備信息</h2>
+{{detail_device_inline|safe}}
+<h2>3.申請說明:</h2>
+<table>
+	<tr>
+		<td>{{app_card.comment}}</td>
+	</tr>
+</table>
+<h2>4.附件:</h2>
+檢視證件影本及承諾書
+
+</div>

@@ -1,0 +1,15 @@
+{% spaceless %}
+<div class="well" style="padding:8px 0px;">
+    <ul class="nav nav-list">
+        <li class="nav-header">GateKeeper</li>
+        {% for tab in tabs %}
+            {% if tab.title != '-'%}
+                <li{% if tab.selected %} class="active"{% endif %}><a href="{{tab.link}}"><i class="{{tab.icon}}"></i> {{tab.title}}{% if tab.num %} <span class="badge badge-important">{{tab.num}}</span>{% endif %}</a>
+                </li>
+            {% else %}
+                <li class="divider"></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endspaceless %}

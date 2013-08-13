@@ -1,0 +1,24 @@
+<div id="step-card">
+    <h1>{{ title}}</h1>
+    <h2>1.持卡人信息：</h2>
+    {{ applicant_info_inline|safe}}
+    {% if is_customer %}
+    <table>
+        <tr>
+        <td>{{form.start_date.label_tag}}:</td><td>{{form.start_date}}</td>
+        <td>{{form.end_date.label_tag}}</td><td>{{form.end_date}}</td>
+        </tr>
+    </table>
+    {% endif %}
+    <h2>2.設備信息：</h2>
+    {{ device_info_inline|safe}}
+    <h2>3.申請說明：</h2>
+    {{ comment_inline|safe }}
+    <h2>4.持卡人證件影本及承諾書(含簽名檔)上傳：</h2>
+    {{ attachment_upload_inline|safe}}
+    
+    <div class="buttonWrapper">
+        <input class="formButton open0" type="button" value="上一步" />
+        <input class="formButton open2" type="button" value="提交主管審核" />
+    </div>
+</div>

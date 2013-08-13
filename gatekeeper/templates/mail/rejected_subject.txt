@@ -1,0 +1,1 @@
+{% load i18n %}您在《ＧＡＴＥＫＥＥＰＥＲ》中的{{app.get_type_display}}單已被拒簽！

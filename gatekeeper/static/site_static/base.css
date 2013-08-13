@@ -1,0 +1,190 @@
+﻿/** 清除内外边距 **/ 
+body, h1, h2, h3, h4, h5, h6, hr, p,  
+blockquote, /* structural elements 结构元素 */ 
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */ 
+pre, /* text formatting elements 文本格式元素 */ 
+form, fieldset, legend, button,  /* input, textarea, */  /* form elements 表单元素 */ 
+/*th, td, */ /* table elements 表格元素 */ 
+img/* img elements 图片元素 */{  
+  border:medium none; 
+  margin: 0;  
+  padding: 0;  
+  border: 0; 
+  vertical-align: baseline;  
+}  
+/** 设置默认字体 **/ 
+body, head, button, input, select, textarea { font: 14px/1.5 '新細明體', Arial, helvetica, sans-serif; }  
+
+/* 初始化Body相關格式 */
+
+em {font-style:normal;}  
+
+
+blockquote, q { quotes: none; }  
+blockquote:before, blockquote:after,  q:before, q:after {  content: '';  content: none;  }
+article, aside, details, figcaption, figure,  footer, header, hgroup, menu, nav, section { display: block; }  
+
+/** 重置列表元素 **/ 
+ul, ol { list-style: none; }  
+
+/** 重置超链接元素 **/ 
+a { text-decoration: none; color:#333;}  
+a:hover { text-decoration: underline; color:#F40; }  
+
+/** 重置图片元素 **/ 
+img{ border:0px;
+     background: url(/ststic/images/loading.gif) no-repeat 50% 50%;  /*图片加载中先加载一个小图片，这样提示用户预加载图片*/
+}  
+
+
+/** 重置表格元素 **/ 
+table {
+	border-collapse: collapse; 
+	border-spacing: 0;}
+
+/* external links */ 
+a[href^="http://"]{  
+    padding-right: 20px;  
+    background: url(external.gif) no-repeat center right;  
+}  
+ 
+/* emails */ 
+
+a[href^="mailto:"]{  
+padding-right: 20px;  
+background: url(email.png) no-repeat center right;  
+}  
+ 
+/* pdfs */ 
+
+a[href$=".pdf"]{  
+padding-right: 20px;  
+background: url(pdf.png) no-repeat center right; 
+}
+
+a:visited{color:#766666; font-size:14px; text-decoration:none}
+a:link{color:#766666; font-size:14px; text-decoration:none}
+a:hover{color:#766666; font-size:14px; text-decoration:underline}
+
+a.infor:visited{color:#0b0096; font-size:14px; text-decoration:none}
+a.infor:link{color:#0b0096; font-size:14px; text-decoration:none}
+a.infor:hover{color:#996666; font-size:14px; text-decoration:underline}
+
+
+input[type="text"]{
+	display: inline-block;
+	outline: none;
+	cursor: pointer;
+	text-align: left;
+	text-decoration: none; /* 文字格式設定,如：上划线overline，删除线line-through，闪烁blinknone 如果none值在属性声明的最后，所有的先前的其他取值都会被清除 */
+	font: 14px/100% '新細明體', Arial, Helvetica, sans-serif; 
+	border: 1px solid rgb(204, 204, 204);
+    
+	/* 圓角率 */
+	-webkit-border-radius: .2em;
+	-moz-border-radius: .2em;
+	border-radius: .2em;
+	
+	/* 外框陰影 */
+	/*-webkit-box-shadow: 0 1px 2px #4c9434;
+	-moz-box-shadow: 0 1px 2px #4c9434;
+	box-shadow: 0 1px 2px #4c9434;*/
+} 
+input[type="text"]:hover{
+    text-decoration: none;
+	background: #D6E7CE;
+} 
+input[type="text"]:active{
+    position: relative;
+	background: #EFEBFF;
+}
+
+
+/* Button一般格式 */
+input[type="submit"]{
+	display: inline-block;
+	outline: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none; /* 文字格式設定,如：上划线overline，删除线line-through，闪烁blinknone 如果none值在属性声明的最后，所有的先前的其他取值都会被清除 */
+	font: 14px/100% '新細明體', Arial, Helvetica, sans-serif; 
+	font-weight: bold;
+	padding: .2em 1.5em .25em;  /* Button外框文字自適應：上，左右，下 */
+	/*text-shadow: 0 1px 2px rgba(0,0,0,.3);    文字陰影：x軸偏移，y軸偏移，陰影範圍，陰影顏色 */
+	
+	/* 圓角率 */
+	-webkit-border-radius: .2em;
+	-moz-border-radius: .2em;
+	border-radius: .2em;
+	
+	/* Button陰影 */
+	-webkit-box-shadow: 0 1px 2px #4c9434;
+	-moz-box-shadow: 0 1px 2px #4c9434;
+	box-shadow: 0 1px 2px #4c9434;
+} 
+input[type="submit"]:hover{
+    text-decoration: none;
+} 
+input[type="submit"]:active{
+    position: relative;
+    margin-top: 1px;
+}
+
+select {
+	width:120px;
+	display: inline-block;
+	outline: none;
+	cursor: pointer;
+	text-align: left;
+	text-decoration: none; /* 文字格式設定,如：上划线overline，删除线line-through，闪烁blinknone 如果none值在属性声明的最后，所有的先前的其他取值都会被清除 */
+	font: 14px/100% '新細明體', Arial, Helvetica, sans-serif; 
+	padding: .1em 0em .1em;
+    border: 1px solid rgb(204, 204, 204);
+    
+	/* 圓角率 */
+	-webkit-border-radius: .2em;
+	-moz-border-radius: .2em;
+	border-radius: .2em;
+	
+	/* Button陰影 */
+	/*-webkit-box-shadow: 0 1px 1px #4c9434;
+	-moz-box-shadow: 0 1px 1px #4c9434;
+	box-shadow: 0 1px 1px #4c9434;*/
+ }
+
+ /* add by tao*/
+
+
+.topbar{
+    width:760px;margin-left:auto;margin-right:auto;
+    border-bottom: solid 1px #ccc;
+    display : block;
+    padding : 10px;
+    background : #EFEFEF;
+    margin-bottom : 20px;
+    -moz-border-radius : 0 0 10px 10px;
+    -webkit-border-radius : 0 0 10px 10px;
+    border-radius : 0 0 10px 10px;
+}
+.pull-right{float:right;}
+
+.container{
+    width:760px;margin-left:auto;margin-right:auto;
+}
+
+.step{
+display:block;
+list-style: none;}
+
+.step li { 
+border: 1px solid black; 
+float: left; 
+height: 20px; 
+line-height: 20px; 
+width: 50px; 
+text-align: center; 
+background: #dedede; 
+color: green; 
+margin-right: 5px; 
+} 
+

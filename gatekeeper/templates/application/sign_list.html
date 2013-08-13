@@ -1,0 +1,63 @@
+{% extends "base_left_nav.html" %}
+{% load bootstrap_toolkit %}
+
+{% block title %}單據簽核 - {% endblock %}
+{% block js %}
+<script type="text/javascript">
+    
+    $(function(){
+        
+    });
+    
+</script>
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="page-header">
+    <h1>待簽核申請單<small>列表</small></h1>
+</div>
+
+<!--input type="text" value="請輸入申請單單號或者管製卡卡號" size="50" name="app_id" id="id_app_id" />
+<input id="id_submit" type="submit" value="查找" /-->
+{% include 'application/search_bar.html' %}
+
+{% for app in app_list %}
+    {% if forloop.first %}
+        <table class="table table-striped table-hover" id="app_table" >
+            <thead>
+                <tr>
+                    <th>提交日期</th>
+                    <th>單號</th>
+                    <th>類型</th>
+                    <th class="header" order=4>申請人</th>
+                    <th class="header" order=5>部門</th>
+                    <th class="header" order=6>攜帶人/使用人</th>
+                </tr>
+            </thead>
+            <tbody>
+    {% endif %}
+                <tr>
+                    <td>{{ app.0|date:"y-m-d H:i:s" }}</td>
+                    <td><a href="{% url 'gk_app_detail' app_id=app.1 %}">{{ app.1 }}</a></td>
+                    <td>{{ app.2 }}</td>
+                    <td>{{ app.3 }}</td>
+                    <td>{{ app.4 }}</td>
+                    <td>{{ app.5 }}</td>
+                    <td>{{ app.6 }}</td>
+                </tr>
+    {% if forloop.last %}
+            </tbody>
+        </table>
+    {% endif %}
+{% empty %}
+    <div class="alert alert-info">
+        <strong>沒有需要簽核的申請單!</strong>
+    </div>
+{% endfor %}
+
+
+{% bootstrap_pagination app_list align="center" %}
+
+{% endblock %}
+

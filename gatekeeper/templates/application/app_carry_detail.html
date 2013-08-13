@@ -1,0 +1,39 @@
+<div id="app-detail">
+<h1>{{app.get_type_display}}單:{{app.number}}</h1>
+<h2>1.申請人信息</h2>
+
+{% if app_carry.in.customer_name or app_carry.out.customer_name %}
+<h3>來訪人:</h3>
+{{detail_customer_inline|safe}}
+<h3>接待人:</h3>
+{{detail_emp_inline|safe}}
+{% else %}
+{{detail_emp_inline|safe}}
+{% endif %}
+
+<h2>2.設備信息</h2>
+{{detail_device_inline|safe}}
+
+<h2>3.申請說明:</h2>
+<table>
+{% if app_carry.in %}
+    <tr>
+        <td>攜入日期:</td><td>{{app_carry.in.in_date|date:"Y-m-d"}}</td><td>使用地點:</td><td>{{app_carry.in.in_dest}}</td>
+    </tr>
+	<tr>
+		<td>攜入理由:</td><td span="3">{{app_carry.in.in_comment}}</td>
+	</tr>
+{% endif %}
+{% if app_carry.out %}
+    <tr>
+        <td>攜出日期:</td><td>{{app_carry.out.out_date|date:"Y-m-d"}}</td><td>目的地:</td><td>{{app_carry.out.out_dest}}</td>
+    </tr>
+	<tr>
+		<td>攜出理由:</td><td span="3">{{app_carry.out.out_comment}}</td>
+	</tr>
+{% endif %}
+</table>
+<h2>4.附件:</h2>
+檢視證件影本及承諾書
+
+</div>

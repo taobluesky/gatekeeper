@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-16 13:48+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\auth\models.py:41
+msgid "name"
+msgstr ""
+
+#: .\auth\models.py:42
+msgid "codename"
+msgstr ""
+
+#: .\auth\models.py:48
+msgid "permission"
+msgstr ""
+
+#: .\auth\models.py:49
+msgid "permissions"
+msgstr ""
+
+#: .\auth\models.py:109
+msgid "user name"
+msgstr ""
+
+#: .\auth\models.py:109
+msgid ""
+"Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
+msgstr ""
+
+#: .\auth\models.py:110
+msgid "first name"
+msgstr ""
+
+#: .\auth\models.py:111
+msgid "last name"
+msgstr ""
+
+#: .\auth\models.py:112
+msgid "e-mail address"
+msgstr ""
+
+#: .\auth\models.py:113
+msgid "password"
+msgstr ""
+
+#: .\auth\models.py:113
+msgid ""
+"Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change "
+"password form</a>."
+msgstr ""
+
+#: .\auth\models.py:114
+msgid "staff status"
+msgstr ""
+
+#: .\auth\models.py:114
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: .\auth\models.py:115
+msgid "active"
+msgstr ""
+
+#: .\auth\models.py:115
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\auth\models.py:116
+msgid "superuser status"
+msgstr ""
+
+#: .\auth\models.py:116
+msgid ""
+"Designates that this user has all permissions without explicitly assigning "
+"them."
+msgstr ""
+
+#: .\auth\models.py:117
+msgid "last login"
+msgstr ""
+
+#: .\auth\models.py:118
+msgid "date joined"
+msgstr ""
+
+#: .\auth\models.py:156
+msgid "message"
+msgstr ""
+
+#: .\auth\views.py:12
+msgid "Welcome"
+msgstr "歡迎_"
+
+#: .\templates\i18n.html.py:5 .\templates\i18n.html.py:6
+msgid "this is the title"
+msgstr "這裡是一個標題"
+
+#: .\templates\i18n.html.py:10
+#, python-format
+msgid ""
+"\n"
+"Now price is:%(price)s, original price %(org_price)s.\n"
+msgstr ""
+"\n"
+"原價:%(org_price)s,現價:%(price)s.\n"

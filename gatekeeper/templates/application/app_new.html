@@ -1,0 +1,52 @@
+{% extends "base_left_nav.html" %}
+{% load bootstrap_toolkit %}
+
+{% block title %}新申請 - {% endblock %}
+{% block js %}
+<script type="text/javascript">
+    $(function(){
+        
+    });
+    
+</script>
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+    
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="page-header">
+    <h1>新申請<small>申請嚮導</small></h1>
+</div>
+
+    <!--div class="hero-unit">
+    <h1>Heading</h1>
+    <p>Tagline</p>
+    <p>
+    <a class="btn btn-primary btn-large">
+    Learn more
+    </a>
+    </p>
+    </div-->
+<ul class="thumbnails">
+    <li class="span3">
+        <a class="thumbnail" href="{% url 'gk_app_new_carry' %}">
+            <img src="{{ STATIC_URL }}img/new.png" alt="攜入攜出申請單">
+        </a>
+    </li>
+    <li class="span3">
+        <a class="thumbnail" href="{% url 'gk_app_new_card' %}">
+            <img src="{{ STATIC_URL }}img/new.png" alt="管製卡申請單">
+        </a>
+    </li>
+    
+</ul>
+
+
+
+
+{% endblock %}
+

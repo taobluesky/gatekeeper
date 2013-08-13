@@ -1,0 +1,17 @@
+{% load gk_tags %}
+
+{% with field|bootstrap_input_type as input_type %}
+    {% if layout == "horizontal" %}
+        {% include "core/field_horizontal.html" %}
+    {% else %}
+        {% if layout == "inline" %}
+            {% include "core/field_inline.html" %}
+        {% else %}
+            {% if layout == "search" %}
+                {% include "core/field_search.html" %}
+            {% else %}
+                {% include "core/field_vertical.html" %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endwith %}

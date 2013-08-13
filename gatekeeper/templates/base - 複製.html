@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="description" content="gatekeeper"/>
+    <meta name="keywords" content="django" />
+    <title>GateKeeper</title>
+
+    <!--link rel="stylesheet" href="/static/css/bootstrap.min.css"-->
+    <!--link rel="stylesheet" href="/static/css/base.css" type="text/css"/>
+    <link rel="stylesheet" href="/static/css/jquery-jvert-tabs.css" type="text/css"/-->
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/validationEngine.jquery.css" rel="stylesheet" type="text/css" />
+    <link href="layout.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/jquery-1.7.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.validate.js"></script>
+    <script type="text/javascript" src="/static/js/lib/jquery.metadata.js"></script>
+    <script type="text/javascript" src="/static/js/localization/messages_cn.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.validationEngine.js"></script> 
+    <script type="text/javascript" src="/static/js/languages/jquery.validationEngine-zh_CN.js"></script>
+    <!--script type="text/javascript" src="/static/js/jquery-jvert-tabs.js"></script-->
+    <script type="text/javascript" src="/static/js/csrf.js"></script>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$("#nav2").click(function(){
+                $(".content").load("appform/create/");
+
+            });
+            //left nav
+			$(".nav li").click(function(){
+				$(this).addClass("nav_current")
+					.siblings().removeClass("nav_current");
+			});
+		
+		});
+        //加載頁面和JSON數據
+        function loadPageAndJson(htmlurl,postdata,elementid,jsonurl,loadjsondatafunc){
+            $.ajax({
+                    url:htmlurl,
+                    type: "POST",
+                    data: postdata,
+                    dataType: "html",
+                    success: function(res){
+                        $(elementid).html(res);
+                        if (jsonurl!=''){
+                            $.getJSON(jsonurl,{},loadjsondatafunc);
+                        }
+                    },
+                    error: function(XMLHttpRequest,textStatus,errorThrown){
+                        alert('loading error!');
+                    }
+                });
+        }
+    </script>
+    </head>
+    <body>
+	<div class="container">
+		<div class="header">
+			<div id="logo">GateKeeper</div>
+			<div id="info">username</div>
+		</div>
+		<div class="maincontent">
+			<div class="side">
+				<div class="nav">
+				<ul>
+					<li><a href="#">信息中心</a></li>
+					<li id="nav2"><a href="#">新申請</a></li>
+					<li><a href="#">單據查找</a></li>
+					<li><a href="#">基本資料維護</a></li>
+				</ul>
+				</div>
+			</div>
+			<div class="main">
+				<div class="content">
+
+				</div>
+				
+			</div>
+		</div>
+		<div class="footer">此处显示  class "footer" 的内容</div>
+	</div>
+</body>
+</html>

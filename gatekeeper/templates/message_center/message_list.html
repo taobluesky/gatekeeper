@@ -1,0 +1,81 @@
+{% extends "base_left_nav.html" %}
+
+{% block title %}消息中心 - {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    var readURL = "{% url 'gk_read_message' %}";
+    var unreadURL = "{% url 'gk_unread_message' %}";
+
+    $(document).ready(function(){
+        /* 消息中心 */
+        
+        //全選按鈕
+        $(".messageAction #all").live("click",function(){
+            $(".messageAction input[name=selected]").attr('checked',this.checked);
+        });
+        
+        $(".messageList").live("click",function(){
+            var msgPop = $(this).next("div");
+            $(this).toggle(function(){
+                msgPop.slideDown();
+                //標記消息為已讀
+                var active = $("#message-tab li.active a[href=#unread]");
+                if (active.length==1){
+                    var url = $(this).attr("url");
+                    $.get(url);
+                }
+            },function(){
+                msgPop.slideUp();
+            }).trigger("click");//先觸發一次 保證第一次點擊有效!!
+        });
+        
+        /* 未讀消息 */
+        $("#message-tab a:first" ).click(function(e){
+            e.preventDefault();
+            $("#unread").load(unreadURL);
+            $(this).tab('show');
+        }){%if tab_name == 'unread'%}.trigger("click"){%endif%};//刷新后加载TAB
+        
+        /* 已讀消息 */
+        $("#message-tab a:last" ).click(function(e){
+            e.preventDefault();
+            $("#read").load(readURL);
+            $(this).tab('show');
+        }){%if tab_name == 'read'%}.trigger("click"){%endif%};
+        
+        /* 分頁頁面使用ajax加載 */
+        $(".pagination ul a").live("click",function(e){
+            e.preventDefault();
+            var url = $(this).attr("href");
+            if(url!="#"){
+                activeTab = $(".tab-content div.active");
+                activeTab.load(url);
+            }
+        });
+        
+    });
+    
+    
+</script>
+{% endblock %}
+
+{% block maincontent %}
+<div class="page-header">
+    <h1>消息中心<small>接收系統信息</small></h1>
+</div>
+
+
+<ul id="message-tab" class="nav nav-pills">
+    <li class="active"><a href="#unread">未讀消息</a></li>
+    <li><a href="#read">已讀消息</a></li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane active" id="unread"></div>
+    <div class="tab-pane" id="read"></div>
+</div>
+<div id="load-icon"></div>
+{% endblock %}
+

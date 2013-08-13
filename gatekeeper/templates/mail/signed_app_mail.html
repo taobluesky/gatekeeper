@@ -1,0 +1,135 @@
+{% load i18n %}
+<html>
+    <head>
+        
+    <style type="text/css">
+	body {
+		margin-left: 10%;
+		margin-right: 10%;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 16px;
+	}
+    table {
+	border-collapse: collapse;
+	border-radius: 5px;
+	width: 60%;
+	}
+	td{
+		border:#C1DAD7 solid 1px;
+		padding:5px 10px;
+	}
+	th{
+		border:#C1DAD7 solid 1px;
+		padding:5px 10px;
+		background:#eee;
+	}
+	.content{
+		text-indent:2em;
+	}
+	.ok{
+		background:#CF9;
+	}
+	.no{
+		background:#FF3F00;
+	}
+	.now{
+		border-bottom:1px dashed #00F;
+	}
+	a:hover{
+		color: #7F00FF;
+		font-weight: bold;
+	}
+
+	</style>
+	
+    </head>
+	
+<body>
+
+<style type="text/css">
+	body {
+		margin-left: 10%;
+		margin-right: 10%;
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 16px;
+	}
+    table {
+	border-collapse: collapse;
+	border-radius: 5px;
+	width: 60%;
+	}
+	td{
+		border:#C1DAD7 solid 1px;
+		padding:5px 10px;
+	}
+	th{
+		border:#C1DAD7 solid 1px;
+		padding:5px 10px;
+		background:#eee;
+	}
+	.content{
+		text-indent:2em;
+	}
+	.ok{
+		background:#CF9;
+	}
+	.no{
+		background:#FF3F00;
+	}
+	.now{
+		border-bottom:1px dashed #00F;
+	}
+	a:hover{
+		color: #7F00FF;
+		font-weight: bold;
+	}
+
+	</style>
+
+<div>
+    <p>
+        尊敬的 {{ signer.name }} {% if is_user %}用戶{%else%}主管{% endif %}：
+    </p>
+    {{ body_content|safe }}
+        
+	<p><strong>簽核歷程：</strong></p>
+
+	<table cellspacing="0">
+		<thead>
+			<tr>
+				<th></th>
+				<th>步驟</th>
+				<th>簽核人</th>
+				<th>時間</th>
+				<th>意見</th>
+			</tr>
+		</thead>
+		{% for h in history %}
+		<tr class="{% if h.action == ROUTE_ACTION_REJECT %}no{%else%}ok{%endif%}">
+			<td><strong>{% if h.action == ROUTE_ACTION_REJECT %}&times;{%else%}&radic;{%endif%}</strong></td>
+			<td>{{h.app_status.get_signer_label_display}}</td>
+			<td>{{h.signer.employee.name}}</td>
+			<td>{{h.date|date:"Y/m/d H:i:s"}}</td>
+			<td>{{h.comment}}</td>
+		</tr>
+		{% endfor %}
+			
+		{% for unsigner in unsigner_list %}
+		{% if forloop.first %}
+		<tr>
+			<td><strong>&gt;</strong></td>
+			<td>{{unsigner.status.get_signer_label_display}}</td>
+			<td colspan="3" >{% if unsigner.signer %} {{unsigner.signer.name}} {%else%}未找到{%endif%}</td>
+		</tr>
+		{% else %}
+		<tr>
+			<td></td>
+			<td>{{unsigner.status.get_signer_label_display}}</td>
+			<td colspan="3">{% if unsigner.signer %} {{unsigner.signer.name}} {%else%}未找到{%endif%}</td>
+		</tr>
+		{% endif %}
+		{% endfor %}
+	</table>
+</div>
+</body>
+</html>

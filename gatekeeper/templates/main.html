@@ -1,0 +1,104 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>GateKeeper</title>  	
+<script type="text/javascript" src="/static/js/jquery-1.7.js"></script>  
+<script type="text/javascript" src="/static/js/jquery.ztree.core-3.3.js"></script>  
+<link type="text/css" rel="stylesheet" href="/static/css/zTreeStyle.css">
+<link type="text/css" rel="StyleSheet" href="/static/css/style.css">
+
+<script type="text/javascript">  
+	var zTree;
+	var mainIframe;
+
+	var setting = {
+		view: {
+			dblClickExpand: false, //定義是否雙擊點開節點
+			showLine: true, //是否顯示虛線
+			showIcon: true,
+			selectedMulti: false, //是否多選
+			expandSpeed: ($.browser.msie && parseInt($.browser.version)<=6)?"":"fast"
+		},
+		
+		data: {
+			simpleData: {
+				enable: true, //是否使用簡單數據模式,簡單數據模式需維護idKey及pIdKey。
+				idKey: "id",
+				pIdKey: "pId",
+				rootPId: ""
+			}
+		},
+		
+		callback: {
+			beforeClick: function(treeId, treeNode) { //用于捕获单击节点之前的事件回调函数，并且根据返回值确定是否允许单击操作,如果返回 false，zTree 将不会选中节点，也无法触发 onClick 事件回调函数
+				var zTree = $.fn.zTree.getZTreeObj("tree");
+				if (treeNode.isParent) {
+					zTree.expandNode(treeNode); //展开或折叠 指定的节点
+					return false;
+				} else {
+					mainIFrame.attr("src",treeNode.file);
+					return true;
+					//$(选择器).attr(属性名) 它的作用就是获取指定元素( $(选择器)部分 )的指定属性的值. 如: $(”img”).attr(”src”) 获取到图片的地址
+					//$(选择器).attr(属性名, 属性值) 它的作用是为所有匹配的元素设置一个属性值。如：$(”img”).attr(”src”,”http://t.douban.com/lpic/s3791510.jpg”) 
+					//$(选择器).attr(Map) 它的意思就是给指定元素设置多个属性值,如：$(“img”).attr({src:“http://t.douban.com/lpic/s3791510.jpg” , height: “300″ , width : “500″})
+					//$jquery中删除属性的关键词是: removeAttr 注意A是大写的，如：删掉图片的高度属性，(“img”). removeAttr(“height”);
+				}
+			}
+		}
+	};
+	
+	var zNodes =[  //定義節點對象
+		{id:1, pId:0, name:"表單管理", open:true, iconOpen:"/static/zTreeStyle/folder_Open.gif", iconClose:"/static/zTreeStyle/folder_Close.gif"},
+		{id:101, pId:1, name:"表單申請", icon:"/static/zTreeStyle/page.gif", file:"../appapply/",  "target":"mainframe"},
+		{id:102, pId:1, name:"表單審核", icon:"/static/zTreeStyle/page.gif", file:"../appverify/", "target":"mainframe"},
+		{id:103, pId:1, name:"表單核准", icon:"/static/zTreeStyle/page.gif", file:"../appapprove/", "target":"mainframe"},
+		{id:103, pId:1, name:"表單查詢", icon:"/static/zTreeStyle/page.gif", file:"../appsearch/", "target":"mainframe"},
+		
+		{id:2, pId:0, name:"帳號管理", open:true, iconOpen:"/static/zTreeStyle/folder_Open.gif", iconClose:"/static/zTreeStyle/folder_Close.gif"},
+		{id:201, pId:2, name:"帳號管理", icon:"/static/zTreeStyle/page.gif", file:"../emp/", "target":"mainframe"},
+		{id:202, pId:2, name:"群組管理", icon:"/static/zTreeStyle/page.gif", file:"../group/", "target":"mainframe"}
+	];
+	
+	
+	$(document).ready(function(){//當獵取文檔就緒的時候
+		var t = $("#tree");  //定義id=tree的元素為t
+		t = $.fn.zTree.init(t, setting, zNodes);  //初始化zTree,创建 zTree 必须使用此方法
+		mainIFrame = $("#mainframe"); //定義id=mainframe的元素為mainIFrame
+		mainIFrame.bind("load", loadReady); //當id=mainframe的元素載入的時候，執行LoadReady()
+		var zTree = $.fn.zTree.getZTreeObj("tree");  //根据 treeId 获取 zTree 对象的方法。 必须在初始化 zTree 以后才可以使用此方法
+		zTree.selectNode(zTree.getNodeByParam("id", 101));  //設定固定登陸時默認的頁面
+	});
+	
+	
+	function loadReady() {
+		var bodyH = mainIFrame.contents().find("body").get(0).scrollHeight,
+		htmlH = mainIFrame.contents().find("html").get(0).scrollHeight,
+		maxH = Math.max(bodyH, htmlH), 
+		minH = Math.min(bodyH, htmlH),
+		h = mainIFrame.height() >= maxH ? minH:maxH ;
+		if (h < 530) h = 530;
+		mainIFrame.height(h);
+	}
+
+	
+</script>  
+</head>  
+<body class="indexbody">  
+
+<TABLE border="0" align=left>
+	<TR HEIGHT='18' WIDTH="100%" >
+		<TD style="BORDER-BOTTOM: #999999 1px dashed" COLSPAN="2"><h2>Gate Keeper</h2></TD>
+	</TR>
+	<TR>
+		<TD width=160px align=left valign=top style="BORDER-RIGHT: #999999 1px dashed">
+			<ul id="tree" class="ztree" style="width:160px; overflow:auto;"></ul>
+		</TD>
+		<TD width="100%" align=left valign=top>
+		<IFRAME ID="mainframe" Name="mainframe" FRAMEBORDER=0 SCROLLING=AUTO width=100% SRC="" onload="loadReady();" >
+		</IFRAME></TD>
+	</TR>
+</TABLE>
+
+</body>  
+</html>  

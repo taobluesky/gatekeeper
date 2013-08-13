@@ -1,0 +1,67 @@
+<div id="step-carry">
+    <h1>電腦攜入/攜出申請單</h1>
+    <h2>1.申請人信息：</h2>
+    <table>
+        <tr>
+        <td>{{form.applicant_type.label_tag}}:</td>
+        <td>{{form.applicant_type}}</td>
+        </tr>
+    </table>
+    
+    <div id="applicant-customer">
+        <table class="">
+        <tr>
+            <td>來訪人資料:</td>
+            <td>{{ applicant_customer_inline|safe}}</td>
+        </td>
+        <tr>
+            <td>接待人資料:</td>
+            <td>{{ applicant_receiver_inline|safe}}</td>
+        </tr>
+        </table>
+    </div>
+    
+    <div id="applicant-employee" style="display:none">
+        <table>
+        <tr>
+            <td>集團員工:</td>
+            <td>{{ applicant_employee_inline|safe}}</td>
+        </tr>
+        </table>
+    </div>
+    
+    <h2>2.設備信息：</h2>
+    {{ device_info_inline|safe}}
+    
+    <table id="carry-in-out">
+        <tr>
+            <td>{{form.carry_in}}{{form.carry_in.label_tag}}</td>
+        </tr>
+        <tr class="carry-in" style="display:none">
+            <td>{{form.in_date.label_tag}}:</td><td>{{form.in_date}}</td>
+            <td>{{form.in_dest.label_tag}}:</td><td>{{form.in_dest}}</td>
+        </tr>
+        <tr class="carry-in" style="display:none">
+            <td>{{form.in_comment.label_tag}}:</td><td colspan="3">{{form.in_comment}}</td>
+        </tr>
+        
+        <tr>
+            <td>{{form.carry_out}}{{form.carry_out.label_tag}}</td>
+        </tr>
+        <tr class="carry-out" style="display:none">
+            <td>{{form.out_date.label_tag}}:</td><td>{{form.out_date}}</td>
+            <td>{{form.out_dest.label_tag}}:</td><td>{{form.out_dest}}</td>
+        </tr>
+        <tr class="carry-out" style="display:none">
+            <td>{{form.out_comment.label_tag}}:</td><td colspan="3">{{form.out_comment}}</td>
+        </tr>
+    </table>
+    
+    <h2>3.申請人證件影本及承諾書(含簽名檔)上傳：</h2>
+    {{ attachment_upload_inline|safe}}
+    
+    <div class="buttonWrapper">
+        <input class="formButton open0" type="button" value="上一步" />
+        <input class="formButton open2" type="button" value="提交主管審核" />
+    </div>
+</div>

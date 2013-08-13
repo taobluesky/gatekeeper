@@ -1,0 +1,117 @@
+{% extends "base_left_nav.html" %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#left_nav #nav3").addClass("nav_current");
+        
+        $("#id_signed").click(function(){
+            $.post( "{# url 'gk_app_signed' app_id=app.number #}",
+                    $("input[name=action],#id_comment").serialize(),
+                    function(data){
+                        console.log(data)
+                        if (data.status=='sucess'){
+                            alert('簽核完成');
+                            $("input[name=action],#id_comment").attr("disabled",true);
+                            $("#id_signed").hide();
+                            
+                        }
+                        else if (data.status=='failure'){
+                            alert('簽核失敗,請確認你的權限！');
+                        }
+                    });
+        });
+
+    });
+    
+    
+    function setTabStyle(liIndex){
+        $(".nav_horizontal ul li").eq(liIndex).addClass("nav_horizontal_current")
+                        .siblings().removeClass("nav_horizontal_current");
+    }
+</script>
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+    
+    
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="page-header">
+    <h1>簽核申請單<small></small></h1>
+</div>
+
+{% include 'application/search_bar.html' %}
+
+{% include detail_template %}
+
+{{ detail_app_html|safe }}
+
+<h2>5.簽核歷程</h2>
+
+<table>
+{% for h in app_history %}
+
+    <tr>
+    <td>{{h.app_status.get_signer_label_display}}：{{h.signer.employee.name}}</td>
+    <td>{{h.app_status.get_time_label_display}}：{{h.date|date:"Y/m/d H:i:s"}}</td>
+    </tr>
+    {% if h.action == ROUTE_ACTION_REJECT %}
+    <tr><td></td><td>退回意見：{{ h.comment }}</td></tr>
+    {% endif %}
+{% endfor %}
+</table>
+
+{% if has_signed_perm %}
+
+{% ifequal app_status "guard_in" %}
+<input type="hidden" value='done' name='action'/>
+<input class="btn" type="button" id="id_signed" value="確定攜入"/>
+{% endifequal %}
+
+{% ifequal app_status "guard_out" %}
+<label for="id_agree"><input type="radio" id="id_agree" value="agree" name="action" />同意攜出</label>
+<label for="id_reject"><input type="radio" id="id_reject" value="reject" name="action" />退回</label>
+<input type="text" placeholder="在此處填退回意見" name="comment" id="id_comment" /><input  class="btn" type="button" id="id_signed" value="確定"/>
+{% endifequal %}
+
+{% ifequal app_status "make_card" %}
+<input type="hidden" value='done' name='action'/>
+<input type="button" id="id_guard_signed" value="製卡完成"/>
+{% endifequal %}
+
+{% endif%}
+
+{% ifequal app_status "other_status" %}
+<table>
+{% for unsigner in unsigner_list %}
+    {% if forloop.first and has_signed_perm %}
+        <tr>
+            <td>{{unsigner.status.get_signer_label_display}}：{% if unsigner.signer %} {{unsigner.signer.name}} {%else%}未找到{%endif%}</td>
+            <td>
+                <label for="id_agree"><input type="radio" id="id_agree" value="agree" name="action" />同意申請</label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label for="id_reject"><input type="radio" id="id_reject" value="reject" name="action" />退回</label>
+                <input type="text" placeholder="在此處填退回意見" name="comment" id="id_comment" />
+                <input class="btn" type="button" id="id_signed" value="確定"/>
+            </td>
+        </tr>
+    {% else %}
+    <tr>
+        <td>{{unsigner.status.get_signer_label_display}}：{% if unsigner.signer %} {{unsigner.signer.name}} {%else%}未找到{%endif%}</td>
+    </tr>
+    {% endif %}
+{% endfor %}
+
+</table>
+{% endifequal %}
+
+{% endblock %}
+

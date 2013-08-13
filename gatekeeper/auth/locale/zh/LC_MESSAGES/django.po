@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-16 14:07+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\models.py:41
+msgid "name"
+msgstr ""
+
+#: .\models.py:42
+msgid "codename"
+msgstr ""
+
+#: .\models.py:48
+msgid "permission"
+msgstr ""
+
+#: .\models.py:49
+msgid "permissions"
+msgstr ""
+
+#: .\models.py:109
+msgid "user name"
+msgstr ""
+
+#: .\models.py:109
+msgid ""
+"Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"
+msgstr ""
+
+#: .\models.py:110
+msgid "first name"
+msgstr ""
+
+#: .\models.py:111
+msgid "last name"
+msgstr ""
+
+#: .\models.py:112
+msgid "e-mail address"
+msgstr ""
+
+#: .\models.py:113
+msgid "password"
+msgstr ""
+
+#: .\models.py:113
+msgid ""
+"Use '[algo]$[salt]$[hexdigest]' or use the <a href=\"password/\">change "
+"password form</a>."
+msgstr ""
+
+#: .\models.py:114
+msgid "staff status"
+msgstr ""
+
+#: .\models.py:114
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: .\models.py:115
+msgid "active"
+msgstr ""
+
+#: .\models.py:115
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\models.py:116
+msgid "superuser status"
+msgstr ""
+
+#: .\models.py:116
+msgid ""
+"Designates that this user has all permissions without explicitly assigning "
+"them."
+msgstr ""
+
+#: .\models.py:117
+msgid "last login"
+msgstr ""
+
+#: .\models.py:118
+msgid "date joined"
+msgstr ""
+
+#: .\models.py:156
+msgid "message"
+msgstr ""
+
+#: .\views.py:12
+msgid "Welcome"
+msgstr "歡迎"

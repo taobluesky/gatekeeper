@@ -1,0 +1,14 @@
+<h2>電腦出入管製卡申請單（駐廠客戶專用）</h2>
+<form id="mainform" enctype="multipart/form-data">
+    <h3>1.持卡人信息：</h3>
+    {% include 'application/customer_info.html' %}
+    
+    <h3>2.申請說明：</h3>
+    <label for="id_comment"></label><textarea id="id_comment" name="comment" cols="50" rows="3" class="validate[required]" />
+    
+    <h3>3.設備信息：</h3>
+    {% include 'application/device_info.html' %}
+    
+    <h3>4.持卡人证件影本及承诺书(含簽名檔)上傳：</h3>
+    {% include 'application/file_upload.html' %}
+</form>

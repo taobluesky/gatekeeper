@@ -1,0 +1,159 @@
+@charset "utf-8";
+
+html,body {
+    height: 100%;
+}
+#footer {
+    background-color: #F5F5F5;
+    /*border-top: 1px solid #E5E5E5;*/
+    text-align: center;
+}
+#footer,#push{
+    height: 80px;
+}
+#wrap{
+    height: auto !important;
+    min-height: 100%;
+    height: 100%;
+    /*負數間距 為 footer的高度*/
+    margin: 0 auto -80px;
+}
+.container .credit{
+    padding: 10px 0;
+}
+/*
+#wrap > .container-fluid{
+    padding-top:40px;
+}
+*/
+#fixed-padding{
+    padding-top:40px;
+}
+
+/* 登錄介面 */
+.splash{
+    padding:50px 0 0 20px;
+}
+
+.form-signin{
+    padding:100px 0 0 20px;
+    width:300px;
+}
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+.title-head{
+    padding:0 0 10px;
+}
+.title-text{
+    font-size:24px;
+    font-weight:600;
+}
+
+/* message center*/
+dl.messageHead{
+    margin:0px;
+    padding:10px;
+    border-bottom: 1px dashed #92B1D2;
+    font-weight:bold;
+}
+
+dl.messageList{
+    margin:0px;
+    padding:10px;
+    border-bottom: 1px dashed #92B1D2;
+    cursor: pointer;
+}
+
+dl.messageList:hover{
+	background:#999;
+	color:#FFF;
+}
+
+span.messageAction{
+    /*display: inline;*/
+    float: left;
+    margin:5px 20px 10px 10px;
+}
+
+dd.messageLeft{
+    display: inline;
+    float: left;
+    margin:0 20px 0 0;
+    width:30%;
+}
+dd.messageTitle{
+    display: inline;
+}
+
+dd.messageRight{
+    display: inline;
+    float: right;
+}
+
+/*錯誤氣泡*/
+.tip-bubble {
+	position: relative;
+	background-color: #FFFFCC;
+	width:auto;
+	padding: 7px 5px;
+	color: #FF6666;
+	font-size: 13px;
+    line-height: 18px;
+	text-align: left;
+	border-radius: 5px;
+	margin: 5px;
+	border: 1px solid #FFFFCC;
+	box-shadow: 1px 1px 2px #202020;
+	-moz-box-shadow: 1px 1px 2px #202020;
+	-webkit-border-shadow: 1px 1px 2px #202020;
+	text-shadow: 0px 0px 15px #fff;
+}
+ 
+.tip-bubble:after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	border: 6px solid;
+}
+ 
+/* Position the Arrow */
+.tip-bubble-top:after {
+	left: 50%;
+	bottom: 100%;
+	/*為使IE6透明 加入dashed*/
+	border-style:dashed dashed solid dashed;
+	border-color:transparent transparent #FFFFCC transparent;
+}
+.tip-bubble-right:after {
+	border-left-color: #FF6666;
+	left: 100%;
+	top: 50%;
+	margin-top: -6px;
+	/*為使IE6透明 加入dashed*/
+	border-style:dashed dashed dashed solid;
+	border-color:transparent transparent transparent #FFFFCC;
+}
+ 
+.tip-bubble-bottom:after {
+	top: 100%;
+	left: 50%;
+	margin-left: -6px;
+	/*為使IE6透明 加入dashed*/
+	border-style:solid dashed dashed dashed;
+	border-color:#FFFFCC transparent transparent transparent;
+}
+ 
+.tip-bubble-left:after {
+	top: 50%;
+	right: 100%;
+	margin-top: -6px;
+	/*為使IE6透明 加入dashed*/
+	border-style:dashed solid dashed dashed;
+	border-color:transparent #FFFFCC transparent transparent;
+}

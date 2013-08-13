@@ -1,0 +1,37 @@
+<div id="device-info-inline">
+
+    <table>
+        {% if show_owner %}
+        <tr>
+            <td>{{form.owner.label_tag}}:</td>
+            <td>{{form.owner}}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td>{{form.manufacturer.label_tag}}:</td>
+            <td>{{form.manufacturer}}</td>
+            <td>{{form.model_no.label_tag}}:</td>
+            <td>{{form.model_no}}</td>
+            <td>{{form.lan_mac.label_tag}}:</td>
+            <td>{{form.lan_mac}}</td>
+        </tr>
+        <tr>
+            <td>{{form.color.label_tag}}:</td>
+            <td>{{form.color}}</td>
+            <td>{{form.sn.label_tag}}:</td>
+            <td>{{form.sn}}</td>
+            <td>{{form.wifi_mac.label_tag}}:</td>
+            <td>{{form.wifi_mac}}</td>
+        </tr>
+    </table>
+    
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $.mask.definitions["h"]="[A-Fa-f0-9]";
+        $("#id_lan_mac").mask("hh-hh-hh-hh-hh-hh");
+        $("#id_wifi_mac").mask("hh-hh-hh-hh-hh-hh");
+    });
+</script>

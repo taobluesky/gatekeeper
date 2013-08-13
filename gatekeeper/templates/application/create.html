@@ -1,0 +1,270 @@
+{% extends "base_left_nav.html" %}
+
+{% block js %}
+<script type="text/javascript">
+    var app_type; //表單類型
+    var stepCurrent = 1;
+    
+    $(document).ready(function(){
+        $("#left_nav #nav2").addClass("nav_current");
+
+        var current = 0;
+        var remote_valid=false;
+        var emp_is_valid=false;
+        $.validator.addMethod("check_emp",function(value,element,params){ 
+            if (!emp_is_valid){
+                return false;
+            } else
+                return true;
+            
+        },"找不到此工號信息!");
+        
+        var emp_check_data = function(data,prefix=""){
+            console.log(data);
+            var data = $.parseJSON(data);
+            var emp_data = data.data;
+            
+            if (data["status"]=="success") {
+                $("#id_"+prefix+"emp_name").val(emp_data.name);
+                $("#id_"+prefix+"extension").val(emp_data.extension);
+                $("#id_"+prefix+"emp_telephone").val(emp_data.telephone);
+                $("#id_"+prefix+"position").val(emp_data.position);
+                $("#id_"+prefix+"grade").val(emp_data.grade);
+                $("#id_"+prefix+"department").val(emp_data.department);
+                emp_is_valid = true;
+            } else if (data["status"]=="fail") {
+                $("#id_"+prefix+"emp_name").val("");
+                $("#id_"+prefix+"extension").val("");
+                $("#id_"+prefix+"emp_telephone").val("");
+                $("#id_"+prefix+"department").val("");
+                $("#id_"+prefix+"position").val("0");
+                $("#id_"+prefix+"grade").val("3");
+                emp_is_valid = false;
+            }
+            
+            v.element($("#id_"+prefix+"emp_no"));
+        };
+            
+        var v = $('#stepForm').validate({
+            rules:{
+                app_type:{required:true},
+                
+                id_image:{required:true,
+                          accept:"image/*"},
+                promise_image:{required:true,
+                          accept:"image/*"},
+
+                emp_no:{required:true,check_emp:"",},
+                "receiver-emp_no":{required:true,check_emp:"",},
+                emp_name:{required:true},
+                "receiver-emp_name":{required:true},
+                extension:{required:true},
+                "receiver-extension":{required:true},
+                department:{required:true},
+                "receiver-department":{required:true},
+                
+                customer_company:{required:true},
+                customer_name:{required:true},
+                customer_telephone:{required:true},
+                id_type:{required:true},
+                id_no :{required:true},
+                
+                owner:{required:true},
+                manufacturer:{required:true},
+                color:{required:true},
+                model_no:{required:true},
+                sn:{required:true},
+                lan_mac:{required:true},
+                //wifi_mac:{required:true},
+
+                comment:{required:true},
+                in_date:{required:true,},
+                in_dest:{required:true,},
+                in_comment:{required:true,},
+                out_date:{required:true,},       
+                out_comment:{required:true,}, 
+                start_date:{required:true},
+                end_date:{required:true}
+            },
+            messages:{
+                id_image:{accept:"請選擇圖片文件!"},
+                promise_image:{accept:"請選擇圖片文件!"}
+            },
+            groups:'app_type',
+            onkeyup:false,
+            errorPlacement:function(error,element) { 
+                if (element.attr("name") == "app_type") {
+                    var $elem = element.parent().parent().parent();
+                    error.insertAfter($elem); 
+                }
+                else
+                    error.insertAfter(element); 
+            },
+        });
+        
+        $(".open0").live("click",function() {
+            current = 0;
+            $("#app-create-step1").hide();
+            $("#app-create-step0").show();
+        });
+        
+        $(".open1").live("click",function() {
+            if (v.form()){
+                $('#stepForm').ajaxSubmit({
+                    url:"{% url 'gk_app_step' 1 %}",
+                    success:function(data){
+                        var data = $.parseJSON(data);
+                        console.log(data);
+                        $("#app-create-step0").hide();
+                        $("#app-create-step1").show();
+                        $("#app-create-step1").html(data.html);
+                        $("#id_id_image").attr("accept","image/*");
+                        $("#id_promise_image").attr("accept","image/*");
+                        //accordion.accordion("option",{active: 1});
+                        current = 1;
+                        //accordion.accordion("refresh");
+                    }
+                });
+                
+                
+            }
+        });
+        
+        $(".open2").live("click",function() {
+            var check1 = $("#id_carry_in").attr("checked");
+            var check2 = $("#id_carry_out").attr("checked");
+            var app_type = $("[name=app_type][checked]:radio").val();
+            if (app_type==0 &&! check1 && ! check2){
+                alert("攜入或者攜出申請至少申請一個!!請勾選!!");
+            } else
+            if (v.form()) {
+                $('#stepForm').ajaxSubmit({
+                    url:"{% url 'gk_app_step' 2 %}",
+                    success:function(data){
+                        var data = $.parseJSON(data);
+                        console.log(data);
+                        
+                        $("#app-create-step1").hide();
+                        $("#app-create-step2").html(data.html);
+                        $("#app-create-step2").show();
+                        
+                    }
+                });
+            };
+        });
+        
+        $("#id_applicant_type").live("change",function() {
+            var select_value = $(this).val();
+            if (select_value == 0){
+                $("#applicant-customer").show();
+                $("#applicant-employee").hide();
+            } else if (select_value == 1){
+                $("#applicant-customer").hide();
+                $("#applicant-employee").show();
+            }
+        });
+        
+        $("#id_carry_in").live("click",function() {
+            var checked = $(this).attr("checked");
+            if (checked)
+                $("#carry-in-out .carry-in").show();
+            else
+                $("#carry-in-out .carry-in").hide();
+        });
+        
+        $("#id_carry_out").live("click",function() {
+            var checked = $(this).attr("checked");
+            if (checked)
+                $("#carry-in-out .carry-out").show();
+            else
+                $("#carry-in-out .carry-out").hide();
+        });
+        
+        //AJAX獲取員工信息
+        $("#id_emp_no").live("change",function() {
+            $.post("{% url 'gk_get_emp_info' %}",{emp_no:$(this).val()},function(data) {
+                emp_check_data(data);
+            });
+        });
+        
+        $("#id_receiver-emp_no").live("change",function() {
+            $.post("{% url 'gk_get_emp_info' %}",{emp_no:$(this).val()},function(data) {
+                emp_check_data(data,"receiver-");
+            });
+        });
+        //添加日曆插件
+        $("#id_start_date,#id_end_date,#id_in_date,#id_out_date").live("click",function() {
+            WdatePicker();
+        });
+        
+        //$('#id_start_date').attr("onClick","WdatePicker()");
+        //$('#id_end_date').attr("onClick","WdatePicker()");
+        //$.mask.definitions["h"]="[A-Fa-f0-9]";
+        //$("#id_lan_mac").mask("hh-hh-hh");
+    });
+
+    
+    function setTabStyle(liIndex){
+        $(".nav_horizontal ul li").eq(liIndex).addClass("nav_horizontal_current")
+                        .siblings().removeClass("nav_horizontal_current");
+    }
+</script>
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+    
+    
+{% endblock %}
+
+{% block maincontent %}
+<!--申請單創建頁面-->
+    <!--橫向導航欄-->
+    <!--ul class="nav_horizontal"><li><a href="#">1.類型選擇</a></li><li><a href="#">2.資料填寫</a></li><li><a href="#">3.部門簽核</a></li></ul-->
+    
+<!--div class="nav_horizontal">
+    <ul>
+        <li><a href="#">1.類型選擇</a></li>
+        <li><a href="#">2.資料填寫</a></li>
+        <li><a href="#">3.部門簽核</a></li>
+        <li><a href="#">4.資安簽核</a></li>
+    </ul>
+    
+</div-->
+ <!--具體內容-->
+<div id="maincontent">
+    <form id="stepForm" method="post" enctype="multipart/form-data">
+        <div id="stepAccordion">
+            
+            <div id="app-create-step0">
+                <h2><a href="#">一.請選擇申請類型</a></h2>
+                <table class="step">
+                    <tr>
+                        <td class="label">{{app_type_form.app_type.label_tag}}：</td>
+                        <td>{{app_type_form.app_type}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div class="buttonWrapper">
+                                <input class="formButton open1" type="button" value="下一步" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            
+            <div id="app-create-step1">
+            </div>
+            
+            <div id="app-create-step2">
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--input type="button" id="prev_button" value="<-上一步"/>
+<input type="button" id="next_button" value="下一步->" /-->
+{% endblock %}
+

@@ -1,0 +1,29 @@
+﻿<h2>請選擇申請類型：</h2>
+<form id="mainform">
+    <ul>
+        <li><label for="id_apptype_1"><input type="radio" id="id_apptype_1" value="1" name="app_type" /> 攜入攜出申請</label></li>
+        <li><label for="id_apptype_3"><input type="radio" id="id_apptype_3" value="3" name="app_type" /> 管製卡(員工專用)</label></li>
+        <li><label for="id_apptype_4"><input type="radio" id="id_apptype_4" value="4" name="app_type" /> 管製卡(駐廠客戶)</label></li>
+        <li><label for="id_apptype_5"><input type="radio" id="id_apptype_5" value="5" name="app_type" /> 管製卡(客戶專用)</label></li>
+    </ul>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#mainform').validate({
+            rules:{
+                app_type:{required:true}
+                },
+            groups:'app_type',
+            errorPlacement:function(error,element) { 
+                if (element.attr("name") == "app_type") {
+                    var $elem = element.parent().parent().parent();
+                    error.insertAfter($elem); 
+                    }
+                else 
+                error.insertAfter(element); 
+            },
+        });
+    });
+    
+</script>

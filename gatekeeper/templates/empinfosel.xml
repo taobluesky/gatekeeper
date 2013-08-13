@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UserData>
+	<userinfo>
+		<empId>員工號</empId>
+        <empName>員工姓名</empName>
+        <pwd>密碼</pwd>
+        <department>部門</department>
+        <userLevel>等級</userLevel>
+        <role>角色</role>
+        <enabled>是否生效</enabled>
+        <enableddt>生效時間</enableddt>
+        <expired>是否過期</expired>
+        <expireddt>過期時間</expireddt>
+        <deleted>是否刪除</deleted>
+        <deleteddt>刪除時間</deleteddt>
+        <createby>創建人</createby>
+        <createdt>創建時間</createdt>
+        <updateby>更新人</updateby>
+        <updatedt>更新時間</updatedt>
+	</userinfo>
+	{%for row in userinfo%}
+	<userinfo>
+		<empId>{{row.empId}}</empId>
+        <empName>{{row.empName}}</empName>
+        <pwd>{{row.pwd}}</pwd>
+        <department>{{row.department}}</department>
+        <userLevel>{{row.userLevel}}</userLevel>
+        <role>{{row.role}}</role>
+        <enabled>{{row.enabled}}</enabled>
+        <enableddt>{{row.enableddt}}</enableddt>
+        <expired>{{row.expired}}</expired>
+        <expireddt>{{row.expireddt}}</expireddt>
+        <deleted>{{row.deleted}}</deleted>
+        <deleteddt>{{row.deleteddt}}</deleteddt>
+        <createby>{{row.createby}}</createby>
+        <createdt>{{row.createdt}}</createdt>
+        <updateby>{{row.updateby}}</updateby>
+        <updatedt>{{row.updatedt}}</updatedt>
+	</userinfo>
+	{%endfor%}
+</UserData>

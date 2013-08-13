@@ -1,0 +1,342 @@
+﻿<! DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>appapply</title>
+<script type="text/javascript" src="/static/js/jquery-1.7.js"></script> 
+<script type="text/javascript" src="/static/js/ajax.js"></script>
+<!--script type="text/javascript" src="/static/js/csrf.js"></script-->
+<!--script type="text/javascript" src="/static/js/Form2Json.js"></script-->
+<link type="text/css" rel="StyleSheet" href="/static/css/style.css">
+<link type="text/css" rel="StyleSheet" href="/static/css/base.css">
+
+<script language="javascript">
+//var form2Json = new Form2Json();
+
+function load(resource,para_type) {
+	if (window.XMLHttpRequest){//非IE浏览器及IE7(7.0及以上版本)，用xmlhttprequest对象创建
+		xmlObj = new XMLHttpRequest();
+	}
+	else if (window.ActiveXObject){//IE(6.0及以下版本)浏览器用activexobject对象创建,如果用户浏览器禁用了ActiveX,可能会失败.
+		xmlObj = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	var btype=getOs();  //From ajax.js
+	
+	//alert(para_type.length);
+	//alert("resource:"+resource+"para_type:"+para_type);
+	//xmlObj.onreadystatechange = (btype="Firefox")?(handleResponse):(handleResponse());  //指定回調函數
+	xmlObj.onreadystatechange = function(){handleResponse(para_type);}
+	xmlObj.open("GET",resource,true);//与服务端建立连接(请求方式post或get，地址,true表示异步)
+	xmlObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xmlObj.send(""); //发送请求
+	//xmlObj.onreadystatechange = function(){handleResponse(para_type);}
+	//xmlObj.onreadystatechange = (btype="Firefox")?(handleResponse):(handleResponse());  //Firefox
+}
+
+function handleResponse(para_type) {//回调函数，对服务端的响应处理，监视response状态
+	//alert(xmlObj.readyState+'  '+ xmlObj.status);
+	if(xmlObj.readyState == 4 && xmlObj.status == 200){//请求状态为4表示成功
+        eval('var coms='+xmlObj.responseText);
+        alert(coms[0].fields.wifi_mac);
+		//if(para_type.length > 1){
+		//	getempinfo(para_type);
+		//}
+		//else{
+		//	checkreturn();
+		//}
+	}
+}
+
+function ajaxResponse(){
+ if(xmlHttp.readyState==4){
+  if(xmlHttp.status==200){
+   eval_r('coms='+xmlHttp.responseText);//把返回的JSON数据通过eval转换成对象
+   var i=document.form1.seccom.selectedIndex;
+   if(i==0){
+    html="Show in this box!";
+   }
+   else
+   { 
+    i=i-1;
+    html="<table>";
+    html=html+"<tr><td>Name:</td><td>"+coms[i].name+"</td></tr>";
+    html=html+"<tr><td>CEO:</td><td>"+coms[i].ceo+"</td></tr>";
+    html=html+"<tr><td>Adr:</td><td>"+coms[i].adr+"</td></tr>";
+    html=html+"</table>";
+   }
+   document.getElementByIdx("txtHint").innerHTML=html;
+  }
+ }
+}
+
+function getempinfo(para_type){
+	var xmlAppData = xmlObj.responseXML.getElementsByTagName("userinfo");  //獲取XML中appdata的數據集
+	recordcount = xmlAppData.length;
+	if (para_type=="empid"){
+		var p_empname = xmlAppData[1].children[1].textContent;
+		var p_empdept = xmlAppData[1].children[3].textContent;
+		if(recordcount > 1){
+			document.getElementById ("empname").value = p_empname;
+			document.getElementById ("empdept").value = p_empdept;
+		}
+		else{
+			document.getElementById ("empname").value = "";
+			document.getElementById ("empdept").value = "";
+		}
+	}
+	if (para_type=="carrierid"){
+		var p_carriername = xmlAppData[1].children[1].textContent;
+		if(recordcount > 1){
+			document.getElementById ("carriername").value=p_carriername;
+		}
+		else{
+			document.getElementById ("carriername").value = "";
+		}
+	}
+}
+
+function checkkeycode(url,para_type,key){
+	if(key=="13"){
+		if (para_type=="empid"){
+			var p_empid = document.getElementById("empid").value;
+		}
+		if (para_type=="carrierid"){
+			var p_empid = document.getElementById("carrierid").value;
+		}
+		url = url + "?empid=" + p_empid;
+		load(url,para_type);
+	}
+}
+
+function checkreturn(){
+	var xmlResultData = xmlObj.responseXML.getElementsByTagName("result"); 
+	alert("ok");
+	document.getElementById("msg").innerHTML = xmlResultData[0].textContent + " added ok";
+	document.getElementById("msg").style.color = "red";
+	document.getElementById("titlesubmit").style.display = "none";
+	document.getElementById("appdetaildiv").style.display = "block";
+}
+
+function appsave(url){
+	var p_empid = document.getElementById("empid").value;
+    var p_empname = document.getElementById("empname").value;
+    var p_empdept = document.getElementById("empdept").value;
+    var p_carrierid = document.getElementById("carrierid").value;
+    var p_carriername = document.getElementById("carriername").value;
+	var p_carriedby = document.getElementById("carriedby").value;
+    var p_from = document.getElementById("from").value;
+    var p_to = document.getElementById("to").value;
+    var p_start = document.getElementById("start").value;
+    var p_end = document.getElementById("end").value;
+	
+	url = url + "?empid=" + p_empid + "&empname=" + p_empname + "&empdept=" + p_empdept + "&carrierid=" + p_carrierid;
+	url = url + "&carriername=" + p_carriername + "&carriedby=" + p_carriedby + "&from=" + p_from;
+	url = url + "&to=" + p_to + "&start=" + p_start + "&end=" + p_end;
+    
+	load(url,"");
+}
+
+function test(url)
+{
+    load(url,"");
+}
+
+function postjson()
+{
+    $.post('savejson', $("#form1").serialize(),
+    function(json) { alert(json.status); });//
+    //jsonstring = json_obj.toJSONString();
+    //alert(jsonstring);
+    
+    //form2Json('form1')
+}
+
+function StringBuilder(){
+	this._element_ = new Array();
+	this.append = function(item) {
+		this._element_.push(item);
+	}
+	this.toString = function() {
+		return this._element_.join("");
+	}
+	this.toJsonString = function() {
+		return this._element_.join(",");
+	}
+	this.join = function(separator) {
+		return this._element_.join(separator);
+	}
+	this.length = function() {
+		return this._element_.length;
+	}	
+}
+function Map() {
+	this.elements = new Array();
+	// 获取MAP元素个数
+	this.size = function() {
+		return this.elements.length;
+	}
+	// 判断MAP是否为空
+	this.isEmpty = function() {
+		return (this.elements.length < 1);
+	}
+	// 删除MAP所有元素
+	this.clear = function() {
+		this.elements = new Array();
+	}
+	// 向MAP中增加元素（key, value)
+	this.put = function(_key, _value) {
+		this.elements.push({key : _key,value : _value});
+	}	
+	//增加元素并覆盖
+	this.putOverride = function(_key,_value){
+		this.remove(_key);
+		this.put(_key,_value);
+	}
+	// 删除指定KEY的元素，成功返回True，失败返回False
+	this.remove = function(_key) {
+		var bln = false;
+		try {
+			for (i = 0; i < this.elements.length; i++) {
+				if (this.elements[i].key == _key) {
+					this.elements.splice(i, 1);
+					return true;
+				}
+			}
+		} catch (e) {
+			bln = false;
+		}
+		return bln;
+	}
+
+	// 获取指定KEY的元素值VALUE，失败返回NULL
+	this.get = function(_key) {
+		try {
+			for (i = 0; i < this.elements.length; i++) {
+				if (this.elements[i].key == _key) {
+					return this.elements[i].value;
+				}
+			}
+		} catch (e) {
+			return null;
+		}
+	}
+	// 获取指定索引的元素（使用element.key，element.value获取KEY和VALUE），失败返回NULL
+	this.element = function(_index) {
+		if (_index < 0 || _index >= this.elements.length) {
+			return null;
+		}
+		return this.elements[_index];
+	}
+	// 判断MAP中是否含有指定KEY的元素
+	this.containsKey = function(_key) {
+		var bln = false;
+		try {
+			for (i = 0; i < this.elements.length; i++) {
+				if (this.elements[i].key == _key) {
+					bln = true;
+				}
+			}
+		} catch (e) {
+			bln = false;
+		}
+		return bln;
+	}
+	// 判断MAP中是否含有指定VALUE的元素
+	this.containsValue = function(_value) {
+		var bln = false;
+		try {
+			for (i = 0; i < this.elements.length; i++) {
+				if (this.elements[i].value == _value) {
+					bln = true;
+				}
+			}
+		} catch (e) {
+			bln = false;
+		}
+		return bln;
+	}
+	// 获取MAP中所有VALUE的数组（ARRAY）
+	this.values = function() {
+		var arr = new Array();
+		for (i = 0; i < this.elements.length; i++) {
+			arr.push(this.elements[i].value);
+		}
+		return arr;
+	}
+	// 获取MAP中所有KEY的数组（ARRAY）
+	this.keys = function() {
+		var arr = new Array();
+		for (i = 0; i < this.elements.length; i++) {
+			arr.push(this.elements[i].key);
+		}
+		return arr;
+	}
+}
+/*form 转换为json 字符串*/
+
+function form2Json(formName){
+var form=document.getElementById(formName);
+var sb=new StringBuilder();var rcs=new Map();
+	for ( var i = 0; i < form.elements.length; i++){
+		var element = form.elements[i];	var name = element.name;
+		if (typeof (name) === "undefined" || (name === null) || (name.length === 0)){continue;}
+		var tagName = element.tagName;
+		if(tagName ==='INPUT'||tagName === 'TEXTAREA'){var type = element.type;
+			if ((type === 'text')||(type === 'password') || (type === 'hidden') || (tagName === 'TEXTAREA')){
+				sb.append("\""+name+"\":\""+encodeURIComponent(element.value.replace(/\r\n/ig,""))+"\"");
+			}else if((type === 'checkbox') || (type === 'radio')){
+				rcs.putOverride(name,type);
+			}else{continue;}
+		}else if (tagName === 'SELECT'){var oc = element.options.length;
+			for ( var j = 0; j <oc; j++){
+				if (element.options[j].selected){sb.append("\""+name+"\":\""+(element.value)+"\"");}
+			}
+		}
+	}	
+	if(rcs.size()>0){
+		for(var i=0;i<rcs.size();i++){
+		var r=rcs.element(i);var radio="";
+			var d=document.getElementsByName(r.key);
+			if(r.value==="radio"){
+				for(j=0;j<d.length;j++){
+					if(d[j].checked){radio=d[j].value;}
+				}				
+			}else{
+				for(j=0;j<d.length;j++){
+					if(d[j].checked){radio+=","+d[j].value;}
+				}
+				radio.substr(1);
+			}
+			sb.append("\""+r.key+"\":\""+radio+"\"");
+		}
+	}
+	return "{"+sb.toJsonString()+"}";
+}
+
+$(function(){
+    $("#send").click(function(){
+        $("#resText").load("add");
+        });
+});
+
+</script>
+</head>
+<body>
+
+<form id='form1' action="" method="post">{% csrf_token %}
+<table>
+{{form}}
+</table>
+
+<input type="submit" name="submit" value="Save" id="submit" />
+<input type="button" name="submit" value="TestJson" id="submit"  onclick="postjson()" />
+<INPUT TYPE="button" VALUE="formtojson" onclick="alert(form2Json('form1'))">
+<INPUT TYPE="button" VALUE="formtojson" onclick="alert($('#form1').serialize())">
+</form>
+
+<input type="button" id="send" value="ajax獲取" />
+<div class="comment">已有評論:</div>
+<div id="resText"></div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<table>
+<tr>
+<td>
+    <label for="id_business">單位:</label>
+</td>
+<td colspan="5">
+    <select name="business" id="id_business">
+    <option value="" selected="selected">事業群</option>
+    <option value="CESBG">CESBG</option>
+    <option value="CMMSG">CMMSG</option>
+    </select>
+    <select name="business2" id="id_business2">
+    <option value="" selected="selected">次群/群周邊</option>
+    </select>
+    <select name="business2" id="id_business2">
+    <option value="" selected="selected">產品處/機能處</option>
+    </select>
+    <select name="business3" id="id_business3">
+    <option value="" selected="selected">部級單位</option>
+    </select>
+    <select name="business4" id="id_business4">
+    <option value="" selected="selected">課級單位</option>
+    </select>
+</td>    
+<tr>
+<td><label for="id_emp_no">工號:</label></td>
+<td><input type="text" name="emp_no" id="id_emp_no" class="validate[required]"/></td>
+<td><label for="id_name">姓名:</label></td>
+<td><input type="text" name="name" id="id_name" /></td>
+<td><label for="id_extension">分机號碼:</label></td>
+<td><input type="text" name="extension" id="id_extension" /></td>
+</tr>
+<tr>
+<td><label for="id_grade">资位:</label></td>
+<td><select type="text" name="grade" id="id_grade">
+    {% for grade in grade_list %}
+    <option value="{{ grade.id }}">{{ grade.name }}</option>
+    {% endfor %}
+    </select></td>
+<td><label for="id_postion">管理职:</label></td>
+<td><select type="text" name="position" id="id_postion">
+    {% for position in postion_list %}
+    <option value="{{ position.id }}">{{ position.name }}</option>
+    {% endfor %}
+    </select></td>
+<td><label for="id_telephone">电话號碼:</label></td>
+<td><input type="text" name="telephone" id="id_telephone" /></td>
+</tr>
+</table>

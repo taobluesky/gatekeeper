@@ -1,0 +1,13 @@
+<table>
+{% for feild in form%}
+<tr>
+    {%if not feild.is_hidden %}
+        <td>{{feild.label_tag}}:</td>
+        <td>{{feild}}</td>
+        <td>{{feild.errors}}</td>
+    {%else%}
+        <td>{{feild}}</td>
+    {%endif%}
+</tr>
+{% endfor %}
+</table>

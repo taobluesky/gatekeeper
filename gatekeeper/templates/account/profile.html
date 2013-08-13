@@ -1,0 +1,28 @@
+{% extends "base_left_nav.html" %}
+{% load bootstrap_toolkit %}
+{% load i18n %}
+{% block title%}{% trans '帳號變更' %} - {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+    });
+</script>
+{% endblock %}
+
+{% block maincontent %}
+<div class="page-header">
+    <h1>{% trans '個人信息變更' %}<small></small></h1>
+</div>
+
+<form class ="form-horizontal" action="{% url 'gk_my_profile' %}"
+      method="post">
+    {% csrf_token %}
+    {{ form|as_bootstrap:"vertical" }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{% trans '保存修改' %}</button>&nbsp;
+        <button type="reset" class="btn">取消</button>
+    </div>
+</form>
+    
+{%endblock%}

@@ -1,0 +1,40 @@
+{% extends "base_login.html" %}
+
+{% block js %}
+{% endblock %}
+
+{% block on_ready %}
+<!--頁面的 on ready-->
+{% endblock %}
+
+{% block login %}
+<div id="loginpage">
+
+<div id="loginlogo">
+    <img src="/static/images/login_logo.jpg" alt="" />
+</div>
+
+<div id="logonform">
+    <form action="{% url auth.views.login_view %}" method="post">
+    <div>
+    <label for="username">User name:<br>
+              <input id="username" name="username" type="text" value="{{username}}" maxlength="20"/>
+              </label>
+    </div>
+    <div>
+    <label for="password">Password:<br>
+              <input id="password" name="password" type="password" value="" maxlength="20"/>
+              </label>
+    </div>
+    <div style="color:red;">
+        {%if error_message%}{{error_message}}{%endif%}
+    </div>
+    <input type="submit" value="Login">
+    </form>
+    
+    
+    
+</div>
+
+</div>
+{% endblock %}

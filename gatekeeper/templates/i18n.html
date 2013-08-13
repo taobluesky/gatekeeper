@@ -1,0 +1,19 @@
+{%load i18n%}
+<html>
+<head></head>
+<body>
+<h1>{% trans "this is the title" noop%}</h1>
+<h1>{% trans "this is the title"%}</h1>
+<h2>{% trans welcome_text  %}</h2>
+<h2>{{welcome_text}}</h2>
+
+{% blocktrans  %}
+Now price is:{{price}}, original price {{org_price}}.
+{% endblocktrans %}
+
+<br>
+LANGUAGE_CODE:{{  LANGUAGE_CODE  }}
+<br>
+LANGUAGE_BIDI:{{  LANGUAGE_BIDI  }}
+</body>
+</html>

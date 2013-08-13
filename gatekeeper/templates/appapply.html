@@ -1,0 +1,191 @@
+﻿<! DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>appapply</title>  	
+<script type="text/javascript" src="/static/js/jquery-1.7.js"></script> 
+<script type="text/javascript" src="/static/js/ajax.js"></script>  
+<link type="text/css" rel="StyleSheet" href="/static/css/style.css">
+<link type="text/css" rel="StyleSheet" href="/static/css/base.css">
+<script language="javascript">
+function load(resource,para_type) {
+	if (window.XMLHttpRequest){//非IE浏览器及IE7(7.0及以上版本)，用xmlhttprequest对象创建
+		xmlObj = new XMLHttpRequest();
+	}
+	else if (window.ActiveXObject){//IE(6.0及以下版本)浏览器用activexobject对象创建,如果用户浏览器禁用了ActiveX,可能会失败.
+		xmlObj = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	var btype=getOs();  //From ajax.js
+	
+	//alert(para_type.length);
+	//alert("resource:"+resource+"para_type:"+para_type);
+	//xmlObj.onreadystatechange = (btype="Firefox")?(handleResponse):(handleResponse());  //指定回調函數
+	xmlObj.onreadystatechange = function(){handleResponse(para_type);}
+	xmlObj.open("GET",resource,true);//与服务端建立连接(请求方式post或get，地址,true表示异步)
+	xmlObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xmlObj.send(""); //发送请求
+	//xmlObj.onreadystatechange = function(){handleResponse(para_type);}
+	//xmlObj.onreadystatechange = (btype="Firefox")?(handleResponse):(handleResponse());  //Firefox
+}
+
+function handleResponse(para_type) {//回调函数，对服务端的响应处理，监视response状态
+	//alert(xmlObj.readyState+'  '+ xmlObj.status);
+	if(xmlObj.readyState == 4 && xmlObj.status == 200){//请求状态为4表示成功
+		if(para_type.length > 1){
+			getempinfo(para_type);
+		}
+		else{
+			checkreturn();
+		}
+	}
+}
+
+function getempinfo(para_type){
+	var xmlAppData = xmlObj.responseXML.getElementsByTagName("userinfo");  //獲取XML中appdata的數據集
+	recordcount = xmlAppData.length;
+	if (para_type=="empid"){
+		var p_empname = xmlAppData[1].children[1].textContent;
+		var p_empdept = xmlAppData[1].children[3].textContent;
+		if(recordcount > 1){
+			document.getElementById ("empname").value = p_empname;
+			document.getElementById ("empdept").value = p_empdept;
+		}
+		else{
+			document.getElementById ("empname").value = "";
+			document.getElementById ("empdept").value = "";
+		}
+	}
+	if (para_type=="carrierid"){
+		var p_carriername = xmlAppData[1].children[1].textContent;
+		if(recordcount > 1){
+			document.getElementById ("carriername").value=p_carriername;
+		}
+		else{
+			document.getElementById ("carriername").value = "";
+		}
+	}
+}
+
+function checkkeycode(url,para_type,key){
+	if(key=="13"){
+		if (para_type=="empid"){
+			var p_empid = document.getElementById("empid").value;
+		}
+		if (para_type=="carrierid"){
+			var p_empid = document.getElementById("carrierid").value;
+		}
+		url = url + "?empid=" + p_empid;
+		load(url,para_type);
+	}
+}
+
+function checkreturn(){
+	var xmlResultData = xmlObj.responseXML.getElementsByTagName("result"); 
+	alert("ok");
+	document.getElementById("msg").innerHTML = xmlResultData[0].textContent + " added ok";
+	document.getElementById("msg").style.color = "red";
+	document.getElementById("titlesubmit").style.display = "none";
+	document.getElementById("appdetaildiv").style.display = "block";
+}
+
+function appsave(url){
+	var p_empid = document.getElementById("empid").value;
+    var p_empname = document.getElementById("empname").value;
+    var p_empdept = document.getElementById("empdept").value;
+    var p_carrierid = document.getElementById("carrierid").value;
+    var p_carriername = document.getElementById("carriername").value;
+	var p_carriedby = document.getElementById("carriedby").value;
+    var p_from = document.getElementById("from").value;
+    var p_to = document.getElementById("to").value;
+    var p_start = document.getElementById("start").value;
+    var p_end = document.getElementById("end").value;
+	
+	url = url + "?empid=" + p_empid + "&empname=" + p_empname + "&empdept=" + p_empdept + "&carrierid=" + p_carrierid;
+	url = url + "&carriername=" + p_carriername + "&carriedby=" + p_carriedby + "&from=" + p_from;
+	url = url + "&to=" + p_to + "&start=" + p_start + "&end=" + p_end;
+
+	load(url,"");
+}
+
+</script>
+
+</head>
+<body>
+	<table width="500" class="base_table" align="center">
+		<tr>
+			<th colspan=2>申請人信息</th>
+		</tr>
+		<tr>
+			<td width="130" align='right'>員工號:&nbsp;</td>
+			<td width="300"><input type="text" id="empid" name="empid" onkeypress="checkkeycode('http://127.0.0.1:8000/empinfosel/','empid',event.keyCode)"></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>姓名:&nbsp;</td>
+			<td><input type="text" id="empname" name="empname" disabled=true ></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>部門:&nbsp;</td>
+			<td><input type="text" id="empdept" name="dept" disabled=true ></td>
+		</tr>
+	</table>
+	<p>
+	<table width="500"  class="base_table" align="center">
+		<tr>
+			<th colspan=2>運貨信息</th>
+		</tr>
+		<tr>
+			<td width="130" align='right'>運貨人工號:&nbsp;</td>
+			<td width="300"><input type="text" id="carrierid" name="carrierid" onkeypress="checkkeycode('http://127.0.0.1:8000/empinfosel/','carrierid',event.keyCode)""></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>運貨人姓名:&nbsp;</td>
+			<td><input type="text" id="carriername" name="carriername" disabled=true></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>運貨方式:&nbsp;</td>
+			<td>
+				<select id="carriedby" name="carriedby">
+					<option></option>
+						<option value="人工">人工</option>
+						<option value="貨車">貨車</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>地點(起):&nbsp;</td>
+			<td><input type="text" id="from" name="from"></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>地點(止):&nbsp;</td>
+			<td><input type="text" id="to" name="to"></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>有效時間(起):&nbsp;</td>
+			<td><input type="text" id="start"  name="startdt"></td>
+		</tr>
+		<tr>
+			<td width="130" align='right'>有效時間(止):&nbsp;</td>
+			<td><input type="text" id="end"  name="enddt"></td>
+		</tr>
+		
+	</table> 
+
+	<table width="500"  class="base_table" align="center">
+
+		<tr align="center">
+			<td><input type="submit" id="titlesubmit" name="titlesubmit"  value="保存" class="blue" onclick="appsave('http://127.0.0.1:8000/apptitlecreate/')"/></td>
+		</tr>
+		<tr>
+			<td><p id="msg">&nbsp;</p></td>
+		</tr>
+	</table>
+
+	<div id="appdetaildiv" style="display:none">
+		<div ><a>增加Detail</a></div>
+		<table>
+			<tr>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

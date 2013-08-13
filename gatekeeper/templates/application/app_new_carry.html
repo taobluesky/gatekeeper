@@ -1,0 +1,150 @@
+{% extends "base_left_nav.html"%}
+{% load bootstrap_toolkit %}
+{% block title %}攜入攜出申請 - {% endblock %}
+
+{% block js %}
+    {{ carry_form.media }}
+    <script>
+        $(function(){
+            //加載員工信息
+            var emp_check_data = function(data){
+                //console.log(data);
+                //var data = $.parseJSON(data);
+                var emp_data = data.data;
+                
+                if (data["status"]=="success") {
+                    $("#id_emp_name").val(emp_data.name)
+                        .next("span").html(emp_data.name);
+                    $("#id_emp_extension").val(emp_data.extension);
+                    $("#id_emp_telephone").val(emp_data.telephone);
+                    $("#id_emp_position").val(emp_data.position);
+                    //$("#id_emp_grade").val(emp_data.grade);
+                    $("#id_emp_department").val(emp_data.department)
+                        .next("span").html(emp_data.department);
+                } else if (data["status"]=="fail") {
+                    $("#id_emp_name").val("")
+                        .next("span").html("");
+                    $("#id_emp_extension").val("");
+                    $("#id_emp_telephone").val("");
+                    $("#id_emp_department").val("")
+                        .next("span").html("");
+                    $("#id_emp_position").val("");
+                    //$("#id_emp_grade").val("");
+                }
+            }
+            
+            $("#id_applicant_type").live("change",function() {
+                var select_value = $(this).val();
+                if (select_value == 0){
+                    $("#customer-info").slideDown();
+                    $("#emp-info-title").slideDown();
+                    $("#emp-info").slideDown();
+                } else if (select_value == 1){
+                    $("#emp-info-title").slideUp();
+                    $("#customer-info").slideUp();
+                    $("#emp-info").slideDown();
+                }
+            }).trigger("change");
+            
+            var $carry_in = $("#id_carry_in");
+            var $carry_out = $("#id_carry_out");
+            var showCarryTab = function(checkbox,tab){
+                var checked = checkbox.attr("checked");
+                if (checked)
+                    $(tab).slideDown();
+                else
+                    $(tab).slideUp();
+            }
+            
+            //載入頁面時初始化
+            showCarryTab($carry_in,"#carry-in-tab");
+            showCarryTab($carry_out,"#carry-out-tab");
+            
+            $carry_in.live("click",function() {
+                showCarryTab($carry_in,"#carry-in-tab");
+            });
+            
+            $carry_out.live("click",function() {
+                showCarryTab($carry_out,"#carry-out-tab");
+            });
+            
+            $("#id_emp_no").live("change",function() {
+                $.get("{% url 'gk_get_emp_info' %}",{emp_no:$(this).val()},function(data) {
+                    emp_check_data(data);
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="page-header">
+    <h1>攜入攜出申請單<small></small></h1>
+</div>
+
+<form class="form-horizontal" id='test_form' enctype="multipart/form-data" action='' method='post'>
+    {%csrf_token%}
+
+    {% if carry_form.non_field_errors %}
+    <div class="alert alert-error">
+        <h4>請改正以下錯誤:</h4>
+        {{carry_form.non_field_errors}}
+    </div>
+    {% endif %}
+
+    {% bootstrap_field carry_form.carry_in %}
+    {% bootstrap_field carry_form.carry_out %}
+
+    <div id="carry-in-tab" class="hide">
+        {% bootstrap_field carry_form.in_date layout="horizontal" %}
+        {% bootstrap_field carry_form.in_dest layout="horizontal" %}
+        {% bootstrap_field carry_form.in_comment layout="horizontal" %}
+    </div>
+
+    <div id="carry-out-tab" class="hide">
+        {% bootstrap_field carry_form.out_date layout="horizontal" %}
+        {% bootstrap_field carry_form.out_dest layout="horizontal" %}
+        {% bootstrap_field carry_form.out_comment layout="horizontal" %}
+    </div>
+
+    <h3>1.申請人信息:</h3>
+    {% bootstrap_field carry_form.applicant_type %}
+    <div id="emp-info">
+    <h4 id="emp-info-title">接待人:</h4>
+        {% bootstrap_field carry_form.emp_no layout="horizontal" %}
+        {% bootstrap_field carry_form.emp_name layout="horizontal" %}
+        {% bootstrap_field carry_form.emp_department layout="horizontal" %}
+        
+        {# {% bootstrap_field carry_form.emp_grade layout="horizontal" %} #}
+        {% bootstrap_field carry_form.emp_position layout="horizontal" %}
+        {% bootstrap_field carry_form.emp_extension layout="horizontal" %}
+        {% bootstrap_field carry_form.emp_telephone layout="horizontal" %}
+    </div>
+    <div id="customer-info">
+    <h4>來訪人/客戶:</h4>
+        {% bootstrap_field carry_form.customer_company layout="horizontal" %}
+        {% bootstrap_field carry_form.customer_name layout="horizontal" %}
+        {% bootstrap_field carry_form.customer_telephone layout="horizontal" %}
+        {% bootstrap_field carry_form.customer_id_type layout="horizontal" %}
+        {% bootstrap_field carry_form.customer_id_no layout="horizontal" %}
+    </div>
+
+    <h3>2.設備信息:</h3>
+    {{ device_form|as_bootstrap:"horizontal" }}
+
+    <h3>3.申請人證件影本上傳</h3>
+    {% bootstrap_field carry_form.id_image layout="horizontal" %}
+    <p class="alert alert-info">
+        <strong>提示！</strong>集團員工需影印廠牌（正面）；訪客、客户需影印有效證件（正反面）。
+    </p>
+
+    <p class="form-actions">
+        <a href="{% url 'gk_app_new' %}" class="btn">上一步</a>&nbsp;
+        <button type="button" class="btn btn-inverse">存为草稿</button>&nbsp;
+        <button type="submit" class="btn btn-large btn-primary">提交申请</button>
+    </p>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,5 @@
+{% load i18n %}
+<p class="content">
+            {% trans "您申請的單號為:" %}{{app.number}}已經送簽!
+</p>
+<a href="{{site}}{% url 'gk_app_detail' app_id=app.number %}">點擊此處查看</a>

@@ -1,0 +1,115 @@
+﻿<html>  
+<head>  
+<title>appverify</title>  	
+<script type="text/javascript" src="/static/js/jquery-1.7.js"></script>  
+<link type="text/css" rel="StyleSheet" href="/static/css/style.css">
+<link type="text/css" rel="StyleSheet" href="/static/css/base.css">
+</head>
+<script language="javascript">
+function load(resource) {
+	if (window.XMLHttpRequest){//非IE浏览器及IE7(7.0及以上版本)，用xmlhttprequest对象创建
+		xmlObj = new XMLHttpRequest();
+	}
+	else if (window.ActiveXObject){//IE(6.0及以下版本)浏览器用activexobject对象创建,如果用户浏览器禁用了ActiveX,可能会失败.
+		xmlObj = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+	var p_signstate = document.getElementById("signstate_id").value;
+	resource = resource + "?signstate=" + p_signstate;
+	//alert(resource);
+	if(p_signstate=="inverify"){
+		document.getElementById("signing_id").style.display="block";
+	}
+	else{
+		document.getElementById("signing_id").style.display="none";
+	}
+	
+	xmlObj.onreadystatechange = handleResponse;  //指定回調函數
+	xmlObj.open("GET",resource,true);//与服务端建立连接(请求方式post或get，地址,true表示异步)
+	xmlObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xmlObj.send(""); //发送请求
+}
+
+function handleResponse() {//回调函数，对服务端的响应处理，监视response状态
+	//alert("state:"+xmlObj.readyState);
+	if (xmlObj.readyState == 4){//请求状态为4表示成功
+		if (xmlObj.status == 200){ //http状态200表示OK，如果在本地运行，status属性不管是在”成功”还是”页面未找到”的情况下，都返回的是0。也即没有通过Web服务器形式的Ajax请求返回值都是0;
+			displayResult(); //所有状态成功，执行此函数，显示数据
+		}
+		 else //http返回状态失败
+		{
+			alert("服务端返回状态" + xmlObj.statusText);
+		}
+	}
+	else //请求状态还没有成功，页面等待
+	{
+		document.getElementById ("applist_id").innerHTML ="数据加载中";
+	}
+}
+
+function displayResult(){
+	var xmlAppData = xmlObj.responseXML.getElementsByTagName("appdata");  //獲取XML中appdata的數據集
+	var xmltbl = "<table border=1>";  //畫表格
+	for (var i=0;i<xmlAppData.length;i++){
+		if(i==0){
+			xmltbl = xmltbl+"<th><input type='checkbox' id='checkbox_all_id' onclick='chkall(this.id)'></th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[0].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[1].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[2].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[3].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[7].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[8].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[12].textContent;+"</th>";
+			xmltbl = xmltbl+"<th>"+xmlAppData[i].children[15].textContent;+"</th>";
+			xmltbl = xmltbl+"</tr>";
+		}
+		else{
+			xmltbl = xmltbl+"<th><input type='checkbox' name='chkGrp' id='checkbox_id'"+i+"></th>";
+			xmltbl = xmltbl+"<td><a href='#' onclick='clk()'>"+xmlAppData[i].children[0].textContent;+"</a></td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[1].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[2].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[3].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[7].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[8].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[12].textContent;+"</td>";
+			xmltbl = xmltbl+"<td>"+xmlAppData[i].children[15].textContent;+"</td>";
+			xmltbl = xmltbl+"</tr>";
+		}
+	}
+	xmltbl = xmltbl + "</table>";
+	document.getElementById ("applist_id").innerHTML = xmltbl;
+}
+
+//全选列表项
+function chkall(chkallid){
+    checked = document.getElementById(chkallid).checked
+    
+    var elem = document.getElementsByName("chkGrp");
+    for (var i = 0; i < elem.length; i++) {
+        elem[i].checked=checked;
+    }
+}
+
+</script>
+
+<body>
+	<table>
+		<tr>
+			<td>
+				<select id="signstate_id" name="signstate" onChange="load('http://127.0.0.1:8000/appxmldatasel')">
+					<option></option>
+						<option value="inverify">待審核</option>
+						<option value="inapprove">簽核中</option>
+						<option value="done">簽核完成</option>
+				</select>
+			</td>
+			<td>
+				<input type="submit" id="signing_id" name="signing" value="審核" onclick="load('http://127.0.0.1:8000/appxmldatasav')" class="blue">
+			</td>
+		</tr>
+	</table> 
+	<p></p>
+	<p id="applist_id"></p>
+
+</body>
+</html>
